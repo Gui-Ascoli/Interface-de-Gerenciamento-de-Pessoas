@@ -8,15 +8,15 @@ class Tarefa{
 
   Future<int?>insert() async{
     Database db = await database!;
-    var resultado = await db.insert(_tarefaTableNome,this.toMap());
+    var resultado = await db.insert(_tarefaTableNome,toMap());
     return resultado;
   }
 
   Future<int>update() async{
     var db = await database!;
-    var resultado = await db.update(_tarefaTableNome,this.toMap(),
+    var resultado = await db.update(_tarefaTableNome,toMap(),
       where: "Id = ?",
-      whereArgs: [this.id]);
+      whereArgs: [id]);
     return resultado;
   }
 
@@ -24,7 +24,7 @@ class Tarefa{
     var db = await database!;
     var resultado = await db.delete(_tarefaTableNome,
       where: "Id = ?",
-      whereArgs: [this.id]);
+      whereArgs: [id]);
     return resultado;
   }
 
@@ -41,20 +41,17 @@ class Tarefa{
     descricao = map['Descricao'];
   }
 
-  late String CreateScript = '''CREATE TABLE IF NOT EXISTS Tarefa (
+  late String createScript = '''CREATE TABLE IF NOT EXISTS Tarefa (
                                   Id INTEGER PRIMARY KEY AUTOINCREMENT,
                                   Descricao TEXT
                                 )''';
                                 
-  late String DropScript = 'DROP TABLE IF EXISTS Tarefa ';
+  late String dropScript = 'DROP TABLE IF EXISTS Tarefa ';
 
    //Fim
 
   late int? id;
   late String descricao;
 
-  Tarefa({int? id = null,String descricao = ''}){
-    this.id = id;
-    this.descricao = descricao;
-  }
+  Tarefa({this.id,this.descricao = ''});
 }

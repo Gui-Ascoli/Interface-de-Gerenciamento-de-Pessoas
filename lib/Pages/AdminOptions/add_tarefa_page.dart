@@ -1,26 +1,25 @@
+import 'package:banco/models/tarefa.dart';
 import 'package:flutter/material.dart';
-import 'package:banco/models/Funcionario.dart';
-import '../../helpers/RouteNames.dart';
+import '../../helpers/route_names.dart';
 import '../../helpers/database_helper.dart';
 
-class AddFuncionariosPage extends StatefulWidget {
-  const AddFuncionariosPage({super.key});
+class AddTarefaPage extends StatefulWidget {
+  const AddTarefaPage({super.key});
 
   @override
-  State<AddFuncionariosPage> createState() => _AddFuncionariosPageState();
+  State<AddTarefaPage> createState() => _AddTarefaPageState();
 }
+class _AddTarefaPageState extends State<AddTarefaPage> {
 
-class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
-  
   TextEditingController? nomeControler = TextEditingController();
   DatabaseHelper db = DatabaseHelper();
-  Funcionario funcionarioSelecionado = Funcionario();
+  Tarefa tarefaSelecionada = Tarefa();
   String? hinttxt = "";
   SnackBar? snackBar;
 
   void _snackBarAdd(){
     snackBar = SnackBar(
-      content: Text('Funcionario adicionado.'),
+      content: const Text('Tarefa adicionada.'),
       duration: const Duration(seconds: 3),
       action: SnackBarAction(
         label: 'Fechar',
@@ -33,7 +32,7 @@ class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
 
   void _snackBarEdit(){
     snackBar = SnackBar(
-      content: Text('Funcionario editado.'),
+      content: const Text('Tarefa editado.'),
       duration: const Duration(seconds: 3),
       action: SnackBarAction(
         label: 'Fechar',
@@ -44,7 +43,7 @@ class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
     );
   }
 
-  Widget _bodyAddFuncionarioPage(){
+  Widget _bodyAddTarefaPage(){
     return   Row(
       children: <Widget>[
         Expanded(
@@ -60,7 +59,7 @@ class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
                       hintText: hinttxt,
                     ),
                     onChanged: (text){
-                      funcionarioSelecionado.nome = text;
+                      tarefaSelecionada.descricao = text;
                     },
                   ),
                 ),
@@ -71,34 +70,33 @@ class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
       ],
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
 
     final routeSettings = ModalRoute.of(context)?.settings;
     if (routeSettings?.arguments == null){
-        funcionarioSelecionado = Funcionario();
-        hinttxt = "Adicionar Funcionario";
+        tarefaSelecionada = Tarefa();
+        hinttxt = "Adicionar Tarefa";
     }
     else {
-      funcionarioSelecionado = routeSettings?.arguments as Funcionario;
-      hinttxt = "Editar Funcionario";
+      tarefaSelecionada = routeSettings?.arguments as Tarefa;
+      hinttxt = "Editar Tarefa";
     }
 
-    nomeControler!.text = funcionarioSelecionado.nome;
+    nomeControler!.text = tarefaSelecionada.descricao;
 
     return Scaffold(
-
       appBar: AppBar(
         leading: Builder(builder: (BuildContext context){
           return BackButton(
             onPressed: (){
-              Navigator.of(context).pushReplacementNamed(RouteNames.rotaListFuncionarioPage);
+              Navigator.of(context).pushReplacementNamed(RouteNames.rotaStartPage);
             },
           );
         }),
         centerTitle: true,
-        title: Text(nomeControler!.text == "" ? 'Adicionar Funcionario' : nomeControler!.text,
+        title: Text(nomeControler!.text == "" ? 'Adicionar Tarefa' : nomeControler!.text,
           style: const TextStyle(
             color: Colors.black,
             fontSize: 50.0,
@@ -107,27 +105,27 @@ class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
         backgroundColor: Colors.blue,
       ),
 
-      body: _bodyAddFuncionarioPage(),
+      body: _bodyAddTarefaPage(),
 
       floatingActionButton:
         FloatingActionButton(
           child: const Icon(Icons.save),
-          onPressed: () async {
-            if(funcionarioSelecionado.nome != ''){
-              if(hinttxt == "Editar Funcionario"){
+          onPressed: (){
+            if(tarefaSelecionada.descricao != ''){
+              if(hinttxt == "Editar Tarefa"){
                 _snackBarEdit();
                 ScaffoldMessenger.of(context).showSnackBar(snackBar!);
-                await funcionarioSelecionado.update();
+                tarefaSelecionada.update();
               }
               else{
                 _snackBarAdd();
                 ScaffoldMessenger.of(context).showSnackBar(snackBar!);
-                await funcionarioSelecionado.insert(); 
+                tarefaSelecionada.insert(); 
               }
-              Navigator.of(context).pushReplacementNamed(RouteNames.rotaListFuncionarioPage);
+              Navigator.of(context).pushReplacementNamed(RouteNames.rotaListTarefaPage);
             }
             else{
-               //TODO:retornar um aviso que nao é possivel inserir um nome vazio
+               //TODO:retornar um aviso que nao é possivel inserir uma Tarefa vazio
             }
           }
       ),

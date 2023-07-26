@@ -1,25 +1,30 @@
-import 'package:banco/models/Tarefa.dart';
 import 'package:flutter/material.dart';
-import '../../helpers/RouteNames.dart';
+import 'package:banco/models/funcionario.dart';
+import '../../helpers/route_names.dart';
 import '../../helpers/database_helper.dart';
 
-class AddTarefaPage extends StatefulWidget {
-  const AddTarefaPage({super.key});
+class AddFuncionariosPage extends StatefulWidget {
+  const AddFuncionariosPage({super.key});
 
   @override
-  State<AddTarefaPage> createState() => _AddTarefaPageState();
+  State<AddFuncionariosPage> createState() => _AddFuncionariosPageState();
 }
-class _AddTarefaPageState extends State<AddTarefaPage> {
 
+class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
+  
   TextEditingController? nomeControler = TextEditingController();
   DatabaseHelper db = DatabaseHelper();
-  Tarefa tarefaSelecionada = Tarefa();
+  Funcionario funcionarioSelecionado = Funcionario();
   String? hinttxt = "";
   SnackBar? snackBar;
 
+  void _ofScreen(){
+    Navigator.of(context).pushReplacementNamed(RouteNames.rotaListFuncionarioPage);
+  }
+
   void _snackBarAdd(){
     snackBar = SnackBar(
-      content: Text('Tarefa adicionada.'),
+      content: const Text('Funcionario adicionado.'),
       duration: const Duration(seconds: 3),
       action: SnackBarAction(
         label: 'Fechar',
@@ -32,7 +37,7 @@ class _AddTarefaPageState extends State<AddTarefaPage> {
 
   void _snackBarEdit(){
     snackBar = SnackBar(
-      content: Text('Tarefa editado.'),
+      content: const Text('Funcionario editado.'),
       duration: const Duration(seconds: 3),
       action: SnackBarAction(
         label: 'Fechar',
@@ -43,7 +48,7 @@ class _AddTarefaPageState extends State<AddTarefaPage> {
     );
   }
 
-  Widget _bodyAddTarefaPage(){
+  Widget _bodyAddFuncionarioPage(){
     return   Row(
       children: <Widget>[
         Expanded(
@@ -59,7 +64,7 @@ class _AddTarefaPageState extends State<AddTarefaPage> {
                       hintText: hinttxt,
                     ),
                     onChanged: (text){
-                      tarefaSelecionada.descricao = text;
+                      funcionarioSelecionado.nome = text;
                     },
                   ),
                 ),
@@ -70,33 +75,34 @@ class _AddTarefaPageState extends State<AddTarefaPage> {
       ],
     );
   }
-
+  
   @override
   Widget build(BuildContext context) {
 
     final routeSettings = ModalRoute.of(context)?.settings;
     if (routeSettings?.arguments == null){
-        tarefaSelecionada = Tarefa();
-        hinttxt = "Adicionar Tarefa";
+        funcionarioSelecionado = Funcionario();
+        hinttxt = "Adicionar Funcionario";
     }
     else {
-      tarefaSelecionada = routeSettings?.arguments as Tarefa;
-      hinttxt = "Editar Tarefa";
+      funcionarioSelecionado = routeSettings?.arguments as Funcionario;
+      hinttxt = "Editar Funcionario";
     }
 
-    nomeControler!.text = tarefaSelecionada.descricao;
+    nomeControler!.text = funcionarioSelecionado.nome;
 
     return Scaffold(
+
       appBar: AppBar(
         leading: Builder(builder: (BuildContext context){
           return BackButton(
             onPressed: (){
-              Navigator.of(context).pushReplacementNamed(RouteNames.rotaStartPage);
+              Navigator.of(context).pushReplacementNamed(RouteNames.rotaListFuncionarioPage);
             },
           );
         }),
         centerTitle: true,
-        title: Text(nomeControler!.text == "" ? 'Adicionar Tarefa' : nomeControler!.text,
+        title: Text(nomeControler!.text == "" ? 'Adicionar Funcionario' : nomeControler!.text,
           style: const TextStyle(
             color: Colors.black,
             fontSize: 50.0,
@@ -105,27 +111,27 @@ class _AddTarefaPageState extends State<AddTarefaPage> {
         backgroundColor: Colors.blue,
       ),
 
-      body: _bodyAddTarefaPage(),
+      body: _bodyAddFuncionarioPage(),
 
       floatingActionButton:
         FloatingActionButton(
           child: const Icon(Icons.save),
-          onPressed: (){
-            if(tarefaSelecionada.descricao != ''){
-              if(hinttxt == "Editar Tarefa"){
+          onPressed: () async {
+            if(funcionarioSelecionado.nome != ''){
+              if(hinttxt == "Editar Funcionario"){
                 _snackBarEdit();
                 ScaffoldMessenger.of(context).showSnackBar(snackBar!);
-                tarefaSelecionada.update();
+                await funcionarioSelecionado.update();
               }
               else{
                 _snackBarAdd();
                 ScaffoldMessenger.of(context).showSnackBar(snackBar!);
-                tarefaSelecionada.insert(); 
+                await funcionarioSelecionado.insert(); 
               }
-              Navigator.of(context).pushReplacementNamed(RouteNames.rotaListTarefaPage);
+              _ofScreen(); // nao é legal chamar "build context" em uma rotina async
             }
             else{
-               //TODO:retornar um aviso que nao é possivel inserir uma Tarefa vazio
+               //TODO:retornar um aviso que nao é possivel inserir um nome vazio
             }
           }
       ),
