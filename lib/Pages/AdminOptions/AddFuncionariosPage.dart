@@ -16,6 +16,33 @@ class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
   DatabaseHelper db = DatabaseHelper();
   Funcionario funcionarioSelecionado = Funcionario();
   String? hinttxt = "";
+  SnackBar? snackBar;
+
+  void _snackBarAdd(){
+    snackBar = SnackBar(
+      content: Text('Funcionario adicionado.'),
+      duration: const Duration(seconds: 3),
+      action: SnackBarAction(
+        label: 'Fechar',
+        onPressed: () {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        },
+      ),
+    );
+  }
+
+  void _snackBarEdit(){
+    snackBar = SnackBar(
+      content: Text('Funcionario editado.'),
+      duration: const Duration(seconds: 3),
+      action: SnackBarAction(
+        label: 'Fechar',
+        onPressed: () {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        },
+      ),
+    );
+  }
 
   Widget _bodyAddFuncionarioPage(){
     return   Row(
@@ -88,9 +115,13 @@ class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
           onPressed: (){
             if(funcionarioSelecionado.nome != ''){
               if(hinttxt == "Editar Funcionario"){
+                _snackBarEdit();
+                ScaffoldMessenger.of(context).showSnackBar(snackBar!);
                 funcionarioSelecionado.update();
               }
               else{
+                _snackBarAdd();
+                ScaffoldMessenger.of(context).showSnackBar(snackBar!);
                 funcionarioSelecionado.insert(); 
               }
               Navigator.of(context).pushReplacementNamed(RouteNames.rotaListFuncionarioPage);

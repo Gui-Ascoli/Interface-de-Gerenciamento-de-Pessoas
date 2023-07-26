@@ -2,10 +2,9 @@
 
 import 'package:banco/models/Categoria.dart';
 import 'package:banco/models/Funcionario.dart';
-import 'package:banco/models/TimeStampTarefaDoFuncionario.dart';
+import 'package:banco/models/StopWatchTarefa.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-
 import '../models/Tarefa.dart';
 import '../models/TarefaDoFuncionario.dart';
 
@@ -105,10 +104,10 @@ class DatabaseHelper {
     return lista;
   }
 
-  Future<List<TimeStampTarefaDoFuncionario>>getAllTimeStampTarefaDoFuncionario() async{
+  Future<List<StopWatchTarefa>>getAllTimeStampTarefaDoFuncionario() async{
     Database db = await database;
     var resultado = await db.query("TimeStampTarefaDoFuncionario");
-    List<TimeStampTarefaDoFuncionario> lista = resultado.isNotEmpty ? resultado.map((c) => TimeStampTarefaDoFuncionario.fromMap(c)).toList() : [];
+    List<StopWatchTarefa> lista = resultado.isNotEmpty ? resultado.map((c) => StopWatchTarefa.fromMap(c)).toList() : [];
     return lista;
   }
 

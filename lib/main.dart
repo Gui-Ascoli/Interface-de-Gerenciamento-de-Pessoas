@@ -7,4 +7,3 @@ void main() {
   databaseFactory = databaseFactoryFfi;
   runApp(const AppRouter());
 }
-
