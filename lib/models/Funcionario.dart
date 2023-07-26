@@ -44,6 +44,13 @@ class Funcionario{
     _apto = map['Apto'];
   }
 
+  late String CreateScript = '''CREATE TABLE IF NOT EXISTS Funcionario (
+                                  Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                  Nome TEXT,
+                                  Apto INTEGER
+                                )''';
+                                
+  late String DropScript = 'DROP TABLE IF EXISTS Funcionario';
    //Fim
 
   late int? id;
@@ -63,4 +70,6 @@ class Funcionario{
   set apto(bool value){
     _apto = (value == true) ? 1 : 0;
   }
+
+
 }

@@ -112,17 +112,17 @@ class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
       floatingActionButton:
         FloatingActionButton(
           child: const Icon(Icons.save),
-          onPressed: (){
+          onPressed: () async {
             if(funcionarioSelecionado.nome != ''){
               if(hinttxt == "Editar Funcionario"){
                 _snackBarEdit();
                 ScaffoldMessenger.of(context).showSnackBar(snackBar!);
-                funcionarioSelecionado.update();
+                await funcionarioSelecionado.update();
               }
               else{
                 _snackBarAdd();
                 ScaffoldMessenger.of(context).showSnackBar(snackBar!);
-                funcionarioSelecionado.insert(); 
+                await funcionarioSelecionado.insert(); 
               }
               Navigator.of(context).pushReplacementNamed(RouteNames.rotaListFuncionarioPage);
             }

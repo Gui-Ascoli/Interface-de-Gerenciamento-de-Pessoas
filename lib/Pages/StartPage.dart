@@ -13,10 +13,10 @@ class _StartPageState extends State<StartPage> {
 
   DatabaseHelper db = DatabaseHelper();
   bool finalizar = false;
-
+ 
 
   Widget _bodyStartPage(){
-    db.getAllCategorias();
+    
     return Row(
       children:<Widget>[
         Expanded(
