@@ -200,10 +200,10 @@ class _RegisterPageState extends State<RegisterPage> {
           Expanded(
             child: _bodyRegisterPage(),
           ),
-          if (selected == true)
-            Expanded(
-              child:_bodyTarefasPage(),
-            ),
+              if (selected == true)
+              Expanded(
+               child:_bodyTarefasPage(),
+              ),
         ],
       ),
     );

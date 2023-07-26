@@ -60,15 +60,11 @@ class DatabaseHelper {
     Directory? dbPath = await getExternalStorageDirectory(); //android
     if(dbPath != null){
       final path = join(dbPath.path, 'my_database.db');
-      final dbi =  await databaseFactoryFfi.openDatabase(path, 
-        
-        );
-      
+      final dbi =  await databaseFactoryFfi.openDatabase(path);
       return dbi;
     }else{
       return null;
     }
-
   }
 
 //metodo retorna um item da lista (VIDEO)/ o primeiro item da lista
