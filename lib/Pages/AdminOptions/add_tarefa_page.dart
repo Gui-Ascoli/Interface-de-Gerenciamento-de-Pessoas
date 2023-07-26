@@ -125,7 +125,6 @@ class _AddTarefaPageState extends State<AddTarefaPage> {
               Navigator.of(context).pushReplacementNamed(RouteNames.rotaListTarefaPage);
             }
             else{
-               //TODO:retornar um aviso que nao é possivel inserir uma Tarefa vazio
             }
           }
       ),

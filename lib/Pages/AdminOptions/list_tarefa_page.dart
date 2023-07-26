@@ -5,18 +5,6 @@ import 'package:flutter/material.dart';
 import '../../helpers/route_names.dart';
 import '../../models/funcionario.dart';
 
-class Item {
-  Item({
-    required this.expandedValue,
-    required this.headerValue,
-    this.isExpanded = false,
-  });
-
-  String expandedValue;
-  String headerValue;
-  bool isExpanded;
-}
-
 class ListTarefaPage extends StatefulWidget {
   const ListTarefaPage({super.key});
 
@@ -27,11 +15,12 @@ class ListTarefaPage extends StatefulWidget {
 class _ListTarefaPageState extends State<ListTarefaPage> {
 
   SnackBar? snackBar;
-  Drawer? f ;
+  Drawer? howDrawer ;
   TextEditingController? nomeControler = TextEditingController();
+  Tarefa tarefaSelecionada = Tarefa();
   Funcionario funcionarioSelecionado = Funcionario();
-  String? hinttxt = "";
-  String drowerMode = "a";
+  String? hinttxt ;
+  String drowerMode = 'Adicionar Funcionario';
   String oldDrowerMode = '';
   List<Tarefa> tarefas = [];
   List<Funcionario> funcionarios = [];
@@ -41,13 +30,26 @@ class _ListTarefaPageState extends State<ListTarefaPage> {
     const Tab(text: 'Funcionarios'),
     const Tab(text: 'Tarefas'),
   ];
-
-
+/*
   void _ofScreen(){
     Navigator.of(context).pushReplacementNamed(RouteNames.rotaListFuncionarioPage);
   }
+*/
 
-  void _snackBarAdd(){
+  void _snackBarErroVazio(){
+    snackBar = SnackBar(
+      content: const Text('Não é possível inserir vazio.'),
+      duration: const Duration(seconds: 3),
+      action: SnackBarAction(
+        label: 'Fechar',
+        onPressed: () {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        },
+      ),
+    );
+  }
+
+  void _snackBarAddFuncionario(){
     snackBar = SnackBar(
       content: const Text('Funcionario adicionado.'),
       duration: const Duration(seconds: 3),
@@ -60,6 +62,60 @@ class _ListTarefaPageState extends State<ListTarefaPage> {
     );
   }
 
+  void _snackBarAddTarefa(){
+    snackBar = SnackBar(
+      content: const Text('Tarefa adicionada.'),
+      duration: const Duration(seconds: 3),
+      action: SnackBarAction(
+        label: 'Fechar',
+        onPressed: () {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        },
+      ),
+    );
+  }
+
+  void _snackBarEditFuncionario(){
+    snackBar = SnackBar(
+      content: const Text('Funcionario editado.'),
+      duration: const Duration(seconds: 3),
+      action: SnackBarAction(
+        label: 'Fechar',
+        onPressed: () {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        },
+      ),
+    );
+  }
+
+  void _snackBarEditTarefa(){
+    snackBar = SnackBar(
+      content: const Text('Tarefa editada.'),
+      duration: const Duration(seconds: 3),
+      action: SnackBarAction(
+        label: 'Fechar',
+        onPressed: () {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        },
+      ),
+    );
+  }
+
+  void _pegarFuncionarios(){
+    db.getAllFuncionarios().then((lista) {
+      setState(() {
+        funcionarios = lista;
+      });
+    });
+  }
+
+  void _pegarTarefas(){
+    db.getAllTarefas().then((lista) {
+      setState(() {
+        tarefas = lista;
+      });
+    });
+  }
 
   @override
   void initState() {
@@ -76,7 +132,7 @@ class _ListTarefaPageState extends State<ListTarefaPage> {
       });
   }
 
-  Widget _listaFuncionarios2(int index){
+  Widget _listarFuncionarios(int index){
     return InkWell(
       child:Container(
         height: 100,
@@ -136,17 +192,17 @@ class _ListTarefaPageState extends State<ListTarefaPage> {
     );
   }
 
-Widget _bodyListFuncionarios(){
+  Widget _bodyListFuncionarios(){
   return ListView.builder(
     padding: const EdgeInsets.all(15),
     itemCount: funcionarios.length,
     itemBuilder: (context, index){
-      return _listaFuncionarios2(index);
+      return _listarFuncionarios(index);
     },
   );
 }
 
-  Widget _listaTarefas2(int index){
+  Widget _listarTarefas(int index){
     return InkWell(
       child:Container(
         height: 100,
@@ -172,12 +228,24 @@ Widget _bodyListFuncionarios(){
                 ),
               ),
             ),
-            IconButton(
-              onPressed: (){
-                Navigator.of(context).pushReplacementNamed (RouteNames.rotaAddTarefaPage, arguments:tarefas[index] );
-              },
-              tooltip: "Editar Tarefa",
-              icon: const Icon(Icons.edit),
+            Builder(
+              builder: (BuildContext context){
+                return IconButton(
+                  onPressed: (){
+                    //nomeControler!.text = tarefas[index].descricao;
+                    tarefaSelecionada.descricao = tarefas[index].descricao;
+                    drowerMode = 'Editar Tarefa';
+                    print('a tarefa $index , $drowerMode');
+                    _drowerListTarefa();
+                    setState(() {
+                      
+                    });
+                    Scaffold.of(context).openEndDrawer();
+                  },
+                  tooltip: 'Editar Tarefa',
+                  icon: const Icon(Icons.edit),
+                );
+              }
             ),
             Container(
               width: 10,
@@ -186,8 +254,9 @@ Widget _bodyListFuncionarios(){
               onPressed: (){
                 tarefas[index].delete();
               },
-              tooltip: "Deletar Tarefa",
+              tooltip: 'Deletar Tarefa',
               icon: const Icon(Icons.delete),
+              //TODO: deseja realmente deletar?
             ),
             Container(
               width: 10,
@@ -203,15 +272,15 @@ Widget _bodyListFuncionarios(){
     padding: const EdgeInsets.all(15),
     itemCount: tarefas.length,
     itemBuilder: (context, index){
-      return _listaTarefas2(index);
+      return _listarTarefas(index);
     },
   );
 }
 
-  Widget _bodyListTarefaPage(){
+  Widget _selectedBody(){
     return TabBarView(
       children:tabs.map((Tab tab) {
-        if(tab.text == "Funcionarios"){
+        if(tab.text == 'Funcionarios'){
           return _bodyListFuncionarios();
         }
         else{
@@ -222,77 +291,105 @@ Widget _bodyListFuncionarios(){
   }
 
   Drawer? _drowerListTarefa(){
-    
-    f= Drawer(
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: 200,
-                    child: Text(drowerMode),
-                    //TODO:se tela funcionario, se nao tela tarefas
+    howDrawer= Drawer(
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Column(
+              children: <Widget>[
+                const SizedBox(
+                  height: 100,
+                ),
+                Text(
+                  textAlign: TextAlign.center ,
+                  drowerMode,
+                  style: const TextStyle(fontSize: 30),
+                ),
+                TextField(
+                  controller: nomeControler,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: hinttxt,
                   ),
-                  TextField(
-                    controller: nomeControler,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      hintText: drowerMode,
-                    ),
-                    onChanged: (text){
-                      funcionarioSelecionado.nome = text;
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.add),
-                    onPressed: () async {
-                      if(funcionarioSelecionado.nome != ''){
-                        if(drowerMode == 'Adicionar Funcionario'){
-                          _snackBarAdd();
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar!);
-                          await funcionarioSelecionado.insert(); 
-                        }
-                        else{
-                          _snackBarAdd();
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar!);
-                          await funcionarioSelecionado.insert(); 
-                        }
-                        _ofScreen(); // nao é legal chamar "build context" em uma rotina async
-                      }
-                      else{
-                        //TODO:retornar um aviso que nao é possivel inserir um nome vazio
-                      }
+                  onChanged: (text){
+                    if(drowerMode == 'Adicionar Funcionario'){funcionarioSelecionado.nome = text;}
+                    if(drowerMode == 'Adicionar Tarefa'){tarefaSelecionada.descricao = text;}
+                    if(drowerMode == 'Editar Funcionario'){funcionarioSelecionado.nome = text;}
+                    if(drowerMode == 'Editar Tarefa'){
+                      tarefaSelecionada.descricao = text;
+                      print(text);
                     }
-                  ),
-                  const Expanded(
-                    child: SizedBox()
-                  )
-                ],
-              )
+                  },
+                ),
+                IconButton(
+                  highlightColor: Colors.grey,
+                  icon: const Icon(Icons.add),
+                  onPressed: () async {
+                    if(funcionarioSelecionado.nome != ''){
+                      if(drowerMode == 'Adicionar Funcionario'){
+                        _snackBarAddFuncionario();
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar!);
+                        await funcionarioSelecionado.insert(); 
+                        _pegarFuncionarios();
+                      }if(drowerMode == 'Editar Funcionario'){
+                        _snackBarEditFuncionario();
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar!);
+                        await funcionarioSelecionado.insert(); 
+                        _pegarFuncionarios();
+                      }
+                      Navigator.pop(context);
+                    }else{
+                      _snackBarErroVazio();
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar!);
+                    }
+                    if(tarefaSelecionada.descricao != ''){
+                      if(drowerMode == 'Adicionar Tarefa'){
+                        _snackBarAddTarefa();
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar!);
+                        await tarefaSelecionada.insert(); 
+                        _pegarTarefas();
+                      }if(drowerMode == 'Editar Tarefa'){
+                        _snackBarEditTarefa();
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar!);
+                        await tarefaSelecionada.update();
+                        _pegarTarefas();
+                      }
+                      Navigator.pop(context);
+                    }
+                    else{
+                      _snackBarErroVazio();
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar!);
+                      }
+                  }
+                ),
+                const Expanded(
+                  child: SizedBox()
+                )
+              ],
             )
-          ],
-        ),
-      );
-      return f;
+          )
+        ],
+      ),
+    );
+    return howDrawer;
   }
+
+  //var scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-  f = _drowerListTarefa();
-
+  howDrawer = _drowerListTarefa();
+  
     return DefaultTabController(
       length: tabs.length,
       child: Builder(builder: (BuildContext context) {
         final TabController tabController = DefaultTabController.of(context);
         tabController.addListener(() {
           if (!tabController.indexIsChanging) {
-
           }
         });
-
-    return Scaffold(
-      appBar: AppBar(
+      return Scaffold(
+        appBar: AppBar(
         backgroundColor: Colors.black,
         centerTitle: true,
         title:const Text('Opções De ADM',
@@ -322,19 +419,23 @@ Widget _bodyListFuncionarios(){
           }
         ),
       ),
-      body: _bodyListTarefaPage(),
-
-      endDrawer: f,
-      floatingActionButton:
-        FloatingActionButton(
-          foregroundColor: Colors.white,
-          backgroundColor: Colors.black,
-          child: const Icon(Icons.add),
-          onPressed: (){
-            Navigator.of(context).pushReplacementNamed (RouteNames.rotaAddTarefaPage, arguments:null );
-          }
-        ),
-    );
+        body: _selectedBody(),
+        endDrawer: howDrawer,
+        floatingActionButton:
+          FloatingActionButton(
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.black,
+            child: const Icon(Icons.add),
+            onPressed: (){
+              drowerMode = 'Adicionar Tarefa';
+              _drowerListTarefa();
+             setState(() {
+                      
+              });
+              Scaffold.of(context).openEndDrawer();
+            }
+          ),
+        );
       }),
     );
   }
