@@ -1,6 +1,7 @@
 import 'package:banco/models/Funcionario.dart';
 import 'package:flutter/material.dart';
 
+import '../helpers/RouteNames.dart';
 import '../helpers/database_helper.dart';
 import '../models/Tarefa.dart';
 
@@ -15,9 +16,6 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
 
   bool selected = false;
-  
-
- 
   List<Tarefa> tarefas = [];
   List<Funcionario> funcionarios = [];
   List<int> colorCodes = [200, 250];
@@ -36,13 +34,13 @@ class _RegisterPageState extends State<RegisterPage> {
         });
       });
 
-/*
+
       db.getAllTarefas().then((lista) {
         setState(() {
           tarefas = lista;
         });
       });
-      */
+      
     }
 
 
@@ -53,7 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
               color: containerColor = Colors.amber[colorCodes[index % colorCodes.length]],
               child: Center(
                 child: Text(
-                  tarefas[index].tarefa,
+                  tarefas[index].descricao,
                   style: const TextStyle(fontSize: 50),
                 ),
               ),
@@ -67,7 +65,7 @@ class _RegisterPageState extends State<RegisterPage> {
         );
   }
 
-  Widget _BodyTarefasPage(){
+  Widget _bodyTarefasPage(){
     return ListView.builder(
         padding: const EdgeInsets.all(15),
         itemCount: tarefas.length,
@@ -80,7 +78,6 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget _listaFuncionarios(int index){
     return InkWell(
             child:Container(
-              
               height: 100,
               color:(containerIndex == funcionarios[index].nome) ? containerColor : Colors.blue[colorCodes[index % colorCodes.length]] ,
               child: Center(
@@ -106,7 +103,7 @@ class _RegisterPageState extends State<RegisterPage> {
         );
   }
 
-  Widget _BodyRegisterPage(){
+  Widget _bodyRegisterPage(){
     return ListView.builder(
           padding: const EdgeInsets.all(15),
           itemCount: funcionarios.length,
@@ -129,6 +126,13 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       backgroundColor: Colors.lightBlue.shade100,
       appBar: AppBar(
+        leading: Builder(builder: (BuildContext context){
+          return BackButton(
+            onPressed: (){
+              Navigator.of(context).pushReplacementNamed(RouteNames.rotaStartPage);
+            },
+          );
+        }),
         centerTitle: true,
         title: const Text('Axtor',
           style: TextStyle(
@@ -141,11 +145,11 @@ class _RegisterPageState extends State<RegisterPage> {
       body: Row(
         children: [
           Expanded(
-            child: _BodyRegisterPage(),
+            child: _bodyRegisterPage(),
           ),
           if (selected == true)
             Expanded(
-            child:_BodyRegisterPage(),
+            child:_bodyTarefasPage(),
             ),
         ],
       ),
