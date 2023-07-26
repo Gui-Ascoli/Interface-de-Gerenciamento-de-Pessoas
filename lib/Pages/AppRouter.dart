@@ -4,7 +4,6 @@ import 'package:banco/Pages/AdminOptions/AddFuncionariosPage.dart';
 import 'package:flutter/material.dart';
 import 'package:banco/Pages/StartPage.dart';
 import 'package:banco/Pages/RegisterPage.dart';
-import 'package:banco/Pages/TasksPage.dart';
 import '../helpers/RouteNames.dart';
 import 'AdminOptions/AddTarefaNoFuncionarioPage.dart';
 import 'AdminOptions/AddTarefaPage.dart';
@@ -20,7 +19,6 @@ class AppRouter extends StatelessWidget{
       routes: {
         RouteNames.rotaStartPage :(context) => const StartPage(),
         RouteNames.rotaRegisterPage :(context) => const RegisterPage(),
-        RouteNames.rotaTasksPage :(context) => const TasksPage(),
         RouteNames.rotaListFuncionarioPage :(context) => const ListFuncionarioPage(),
         RouteNames.rotaListTarefaPage :(context) => const ListTarefaPage(),
         RouteNames.rotaAddFuncionariosPage :(context) => const AddFuncionariosPage(),
@@ -28,8 +26,5 @@ class AppRouter extends StatelessWidget{
         RouteNames.rotaAddTarefaPage :(context) => const AddTarefaPage(),
       },
     );
-    
-  
-
   }
 }

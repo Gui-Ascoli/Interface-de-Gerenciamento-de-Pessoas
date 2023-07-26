@@ -1,10 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:banco/models/Funcionario.dart';
-
 import '../../helpers/RouteNames.dart';
 import '../../helpers/database_helper.dart';
-
 
 class AddFuncionariosPage extends StatefulWidget {
   const AddFuncionariosPage({super.key});
@@ -12,6 +9,13 @@ class AddFuncionariosPage extends StatefulWidget {
   @override
   State<AddFuncionariosPage> createState() => _AddFuncionariosPageState();
 }
+
+class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
+  
+  TextEditingController? nomeControler = TextEditingController();
+  DatabaseHelper db = DatabaseHelper();
+  Funcionario funcionarioSelecionado = Funcionario();
+  String? hinttxt = "";
 
   Widget _bodyAddFuncionarioPage(){
     return   Row(
@@ -41,12 +45,6 @@ class AddFuncionariosPage extends StatefulWidget {
     );
   }
   
-  TextEditingController? nomeControler = TextEditingController();
-  DatabaseHelper db = DatabaseHelper();
-  Funcionario funcionarioSelecionado = Funcionario();
-  String? hinttxt = "";
-
-class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
   @override
   Widget build(BuildContext context) {
 
@@ -63,6 +61,7 @@ class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
     nomeControler!.text = funcionarioSelecionado.nome;
 
     return Scaffold(
+
       appBar: AppBar(
         leading: Builder(builder: (BuildContext context){
           return BackButton(
@@ -71,7 +70,6 @@ class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
             },
           );
         }),
-        
         centerTitle: true,
         title: Text(nomeControler!.text == "" ? 'Adicionar Funcionario' : nomeControler!.text,
           style: const TextStyle(
@@ -81,13 +79,13 @@ class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
         ),
         backgroundColor: Colors.blue,
       ),
+
       body: _bodyAddFuncionarioPage(),
+
       floatingActionButton:
         FloatingActionButton(
           child: const Icon(Icons.save),
           onPressed: (){
-            
-
             if(funcionarioSelecionado.nome != ''){
               if(hinttxt == "Editar Funcionario"){
                 funcionarioSelecionado.update();
@@ -98,7 +96,7 @@ class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
               Navigator.of(context).pushReplacementNamed(RouteNames.rotaListFuncionarioPage);
             }
             else{
-               //retornar um aviso que nao é possivel inserir um nome vazio
+               //TODO:retornar um aviso que nao é possivel inserir um nome vazio
             }
           }
       ),

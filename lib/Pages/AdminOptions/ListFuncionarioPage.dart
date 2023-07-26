@@ -29,55 +29,55 @@ class _ListFuncionarioPageState extends State<ListFuncionarioPage> {
 
   Widget _listaFuncionarios2(int index){
     return InkWell(
-            child:Container(
-              height: 100,
-              color: Colors.green[colorCodes[index % colorCodes.length]],
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      funcionarios[index].nome,
-                      style: const TextStyle(fontSize: 50),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: (){
-                      if(funcionarios[index].apto == true){
-                        Navigator.of(context).pushReplacementNamed (RouteNames.rotaAddFuncionariosPage, arguments:funcionarios[index] );
-                      }
-                    },
-                    tooltip: "Editar funcionario",
-                    icon: const Icon(Icons.edit),
-                  ),
-                  Container(
-                    width: 10,
-                  ),
-                  Switch( 
-                    value: funcionarios[index].apto,
-                    onChanged: (value){
-                      setState(() {
-                        funcionarios[index].apto = !funcionarios[index].apto;
-                        funcionarios[index].update();
-                      });
-                    },
-                  ),
-                  Container(
-                    width: 10,
-                  ),
-                ]
+      child:Container(
+        height: 100,
+        color: Colors.green[colorCodes[index % colorCodes.length]],
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Text(
+                funcionarios[index].nome,
+                style: const TextStyle(fontSize: 50),
               ),
             ),
-        );
+            IconButton(
+              onPressed: (){
+                if(funcionarios[index].apto == true){
+                  Navigator.of(context).pushReplacementNamed (RouteNames.rotaAddFuncionariosPage, arguments:funcionarios[index] );
+                }
+              },
+              tooltip: "Editar funcionario",
+              icon: const Icon(Icons.edit),
+            ),
+            Container(
+              width: 10,
+            ),
+            Switch( 
+              value: funcionarios[index].apto,
+              onChanged: (value){
+                setState(() {
+                  funcionarios[index].apto = !funcionarios[index].apto;
+                  funcionarios[index].update();
+                });
+              },
+            ),
+            Container(
+              width: 10,
+            ),
+          ]
+        ),
+      ),
+    );
   }
 
 Widget _bodyNewRootPage(){
   return ListView.builder(
-        padding: const EdgeInsets.all(15),
-        itemCount: funcionarios.length,
-        itemBuilder: (context, index){
-          return _listaFuncionarios2(index);
-      },
-    );
+    padding: const EdgeInsets.all(15),
+    itemCount: funcionarios.length,
+    itemBuilder: (context, index){
+      return _listaFuncionarios2(index);
+    },
+  );
 }
 
   @override

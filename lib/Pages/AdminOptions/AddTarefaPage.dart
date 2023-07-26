@@ -1,6 +1,5 @@
 import 'package:banco/models/Tarefa.dart';
 import 'package:flutter/material.dart';
-
 import '../../helpers/RouteNames.dart';
 import '../../helpers/database_helper.dart';
 
@@ -10,6 +9,12 @@ class AddTarefaPage extends StatefulWidget {
   @override
   State<AddTarefaPage> createState() => _AddTarefaPageState();
 }
+class _AddTarefaPageState extends State<AddTarefaPage> {
+
+  TextEditingController? nomeControler = TextEditingController();
+  DatabaseHelper db = DatabaseHelper();
+  Tarefa tarefaSelecionada = Tarefa();
+  String? hinttxt = "";
 
   Widget _bodyAddTarefaPage(){
     return   Row(
@@ -39,13 +44,6 @@ class AddTarefaPage extends StatefulWidget {
     );
   }
 
-
-  TextEditingController? nomeControler = TextEditingController();
-  DatabaseHelper db = DatabaseHelper();
-  Tarefa tarefaSelecionada = Tarefa();
-  String? hinttxt = "";
-
-class _AddTarefaPageState extends State<AddTarefaPage> {
   @override
   Widget build(BuildContext context) {
 
@@ -70,7 +68,6 @@ class _AddTarefaPageState extends State<AddTarefaPage> {
             },
           );
         }),
-        
         centerTitle: true,
         title: Text(nomeControler!.text == "" ? 'Adicionar Tarefa' : nomeControler!.text,
           style: const TextStyle(
@@ -80,13 +77,13 @@ class _AddTarefaPageState extends State<AddTarefaPage> {
         ),
         backgroundColor: Colors.blue,
       ),
+
       body: _bodyAddTarefaPage(),
+
       floatingActionButton:
         FloatingActionButton(
           child: const Icon(Icons.save),
           onPressed: (){
-            
-
             if(tarefaSelecionada.descricao != ''){
               if(hinttxt == "Editar Tarefa"){
                 tarefaSelecionada.update();
@@ -97,7 +94,7 @@ class _AddTarefaPageState extends State<AddTarefaPage> {
               Navigator.of(context).pushReplacementNamed(RouteNames.rotaListTarefaPage);
             }
             else{
-               //retornar um aviso que nao é possivel inserir uma Tarefa vazio
+               //TODO:retornar um aviso que nao é possivel inserir uma Tarefa vazio
             }
           }
       ),
