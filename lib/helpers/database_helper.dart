@@ -2,6 +2,7 @@
 
 import 'package:banco/models/Categoria.dart';
 import 'package:banco/models/Funcionario.dart';
+import 'package:banco/models/TimeStampTarefaDoFuncionario.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -39,7 +40,7 @@ class DatabaseHelper {
 
 
 //metodo retorna um item da lista (VIDEO)/ o primeiro item da lista
-   Future<Funcionario?> getFuncionario(int id) async {
+  Future<Funcionario?> getFuncionario(int id) async {
     Database db = await database;
 
     List<Map<String, dynamic>> maps = await db.query(
@@ -48,7 +49,6 @@ class DatabaseHelper {
       where: 'Id = ?',
       whereArgs: [id],
     );
-
   //maps.length
     if (maps.isNotEmpty) {
       return Funcionario.fromMap(maps.first);
@@ -56,6 +56,17 @@ class DatabaseHelper {
       return null;
     }
   }
+
+  Future<String> getTempoAtual() async {
+    Database db = await database;
+
+    final result = await db.rawQuery('SELECT datetime("now")');
+    final currentTimestamp = result.first.values.first as String;
+
+    return currentTimestamp;
+    //print('Timestamp atual: $currentTimestamp');
+  }
+
 
   Future<List<Funcionario>>getAllFuncionarios() async{
     Database db = await database;
@@ -108,13 +119,21 @@ class DatabaseHelper {
     return lista;
   }
 
-    Future<List<TarefaDoFuncionario>>getAllTarefasDoFuncionario() async{
+  Future<List<TarefaDoFuncionario>>getAllTarefasDoFuncionario() async{
     Database db = await database;
 
     var resultado = await db.query("TarefaDoFuncionario");
 
     List<TarefaDoFuncionario>lista = 
     resultado.isNotEmpty ? resultado.map((c) => TarefaDoFuncionario.fromMap(c)).toList() : [];
+
+    return lista;
+  }
+
+  Future<List<TimeStampTarefaDoFuncionario>>getAllTimeStampTarefaDoFuncionario() async{
+    Database db = await database;
+    var resultado = await db.query("TimeStampTarefaDoFuncionario");
+    List<TimeStampTarefaDoFuncionario> lista = resultado.isNotEmpty ? resultado.map((c) => TimeStampTarefaDoFuncionario.fromMap(c)).toList() : [];
 
     return lista;
   }

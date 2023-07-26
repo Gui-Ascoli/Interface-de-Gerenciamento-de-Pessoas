@@ -4,26 +4,26 @@ import 'package:sqflite/sqlite_api.dart';
 
 class Funcionario{
   //Conexão com o banco
-  final String _funcinaroColunaName = "Funcionario";
+  final String _funcinaroTableName = "Funcionario";
 
   Future<Database>? database = DatabaseHelper().database;
 
   Future<int?>insert() async{
     Database db = await database!;
-    var resultado = await db.insert(_funcinaroColunaName,this.toMap());
+    var resultado = await db.insert(_funcinaroTableName,this.toMap());
   
     return resultado;
   }
   Future<int>update() async{
     var db = await database!;
-    var resultado = await db.update(_funcinaroColunaName,this.toMap(),
+    var resultado = await db.update(_funcinaroTableName,this.toMap(),
       where: "Id = ?",
       whereArgs: [this.id]);
     return resultado;
   }
   Future<int>delete() async{
     var db = await database!;
-    var resultado = await db.delete(_funcinaroColunaName,
+    var resultado = await db.delete(_funcinaroTableName,
       where: "Id = ?",
       whereArgs: [this.id]);
     return resultado;
