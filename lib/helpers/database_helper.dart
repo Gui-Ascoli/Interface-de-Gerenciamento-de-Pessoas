@@ -5,6 +5,8 @@ import 'package:banco/models/Funcionario.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
+import '../models/Tarefa.dart';
+
 class DatabaseHelper {
   DatabaseHelper._();
 
@@ -93,6 +95,19 @@ class DatabaseHelper {
 
     return lista;
   }
+
+  Future<List<Tarefa>>getAllTarefas() async{
+    Database db = await database;
+
+    var resultado = await db.query("Tarefa");
+
+    List<Tarefa>lista = 
+    resultado.isNotEmpty ? resultado.map((c) => Tarefa.fromMap(c)).toList() : [];
+
+    return lista;
+  }
+
+
 
 //metodo retorna toda a lista funcionarios
   //metodo obtem o numero de objetos nome no banco de dados
