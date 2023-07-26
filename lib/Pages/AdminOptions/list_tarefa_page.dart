@@ -1,3 +1,4 @@
+
 import 'package:banco/helpers/database_helper.dart';
 import 'package:banco/models/tarefa.dart';
 import 'package:flutter/material.dart';
@@ -25,10 +26,13 @@ class ListTarefaPage extends StatefulWidget {
 
 class _ListTarefaPageState extends State<ListTarefaPage> {
 
+  SnackBar? snackBar;
+  Drawer? f ;
   TextEditingController? nomeControler = TextEditingController();
   Funcionario funcionarioSelecionado = Funcionario();
   String? hinttxt = "";
-  String drowerMode = "";
+  String drowerMode = "a";
+  String oldDrowerMode = '';
   List<Tarefa> tarefas = [];
   List<Funcionario> funcionarios = [];
   DatabaseHelper db = DatabaseHelper();
@@ -37,6 +41,24 @@ class _ListTarefaPageState extends State<ListTarefaPage> {
     const Tab(text: 'Funcionarios'),
     const Tab(text: 'Tarefas'),
   ];
+
+
+  void _ofScreen(){
+    Navigator.of(context).pushReplacementNamed(RouteNames.rotaListFuncionarioPage);
+  }
+
+  void _snackBarAdd(){
+    snackBar = SnackBar(
+      content: const Text('Funcionario adicionado.'),
+      duration: const Duration(seconds: 3),
+      action: SnackBarAction(
+        label: 'Fechar',
+        onPressed: () {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        },
+      ),
+    );
+  }
 
 
   @override
@@ -54,49 +76,24 @@ class _ListTarefaPageState extends State<ListTarefaPage> {
       });
   }
 
-  void _drowerMode(String? tabtext){
-    drowerMode = tabtext!;
-  }
-
-  Widget? drowerText(){
-    if (drowerMode == "Funcionarios"){
-      return 
-         const Center(
-           child: Text(
-            'Adicionar Funcionario',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 40,
-            ),
-          ),
-        );
-
-    }else{
-      return Container();
-    }
-  }
-
-  
   Widget _listaFuncionarios2(int index){
     return InkWell(
       child:Container(
         height: 100,
-        //color: Colors.green[colorCodes[index % colorCodes.length]],
         decoration: BoxDecoration(
-            color: Colors.white,
-             borderRadius: BorderRadius.circular(30), //border corner radius
-             boxShadow:[ 
-               BoxShadow(
-                  color: Colors.grey.withOpacity(0.5), //color of shadow
-                  spreadRadius: 3, //spread radius
-                  blurRadius: 15, // blur radius
-                  offset: const Offset(0, 6), // changes position of shadow
-                  //first paramerter of offset is left-right
-                  //second parameter is top to down
-               ),
-               //you can set more BoxShadow() here
-              ],
-          ),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30), 
+          boxShadow:[ 
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5), //color of shadow
+              spreadRadius: 3, 
+              blurRadius: 15, 
+              offset: const Offset(0, 6), // changes position of shadow
+              //first paramerter of offset is left-right
+              //second parameter is top to down
+            ),
+          ],
+        ),
         child: Row(
           children: <Widget>[
             Container(
@@ -153,22 +150,18 @@ Widget _bodyListFuncionarios(){
     return InkWell(
       child:Container(
         height: 100,
-        //color: Colors.green[colorCodes[index % colorCodes.length]],
         decoration: BoxDecoration(
-            color: Colors.white,
-             borderRadius: BorderRadius.circular(30), //border corner radius
-             boxShadow:[ 
-               BoxShadow(
-                  color: Colors.grey.withOpacity(0.5), //color of shadow
-                  spreadRadius: 3, //spread radius
-                  blurRadius: 15, // blur radius
-                  offset: const Offset(0, 6), // changes position of shadow
-                  //first paramerter of offset is left-right
-                  //second parameter is top to down
-               ),
-               //you can set more BoxShadow() here
-              ],
-          ),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30), 
+          boxShadow:[ 
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5), 
+              spreadRadius: 3, 
+              blurRadius: 15,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
         child: Row(
           children: <Widget>[
             Expanded(
@@ -202,7 +195,6 @@ Widget _bodyListFuncionarios(){
           ]
         ),
       ),  
-
     );
   }
 
@@ -216,29 +208,81 @@ Widget _bodyListFuncionarios(){
   );
 }
 
-
   Widget _bodyListTarefaPage(){
     return TabBarView(
       children:tabs.map((Tab tab) {
         if(tab.text == "Funcionarios"){
-          _drowerMode(tab.text);
           return _bodyListFuncionarios();
         }
         else{
-          //_drowerMode(tab.text);
           return _bodyListTarefas();
         }
       }).toList()
     );
+  }
 
+  Drawer? _drowerListTarefa(){
+    
+    f= Drawer(
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 200,
+                    child: Text(drowerMode),
+                    //TODO:se tela funcionario, se nao tela tarefas
+                  ),
+                  TextField(
+                    controller: nomeControler,
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      hintText: drowerMode,
+                    ),
+                    onChanged: (text){
+                      funcionarioSelecionado.nome = text;
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: () async {
+                      if(funcionarioSelecionado.nome != ''){
+                        if(drowerMode == 'Adicionar Funcionario'){
+                          _snackBarAdd();
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar!);
+                          await funcionarioSelecionado.insert(); 
+                        }
+                        else{
+                          _snackBarAdd();
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar!);
+                          await funcionarioSelecionado.insert(); 
+                        }
+                        _ofScreen(); // nao é legal chamar "build context" em uma rotina async
+                      }
+                      else{
+                        //TODO:retornar um aviso que nao é possivel inserir um nome vazio
+                      }
+                    }
+                  ),
+                  const Expanded(
+                    child: SizedBox()
+                  )
+                ],
+              )
+            )
+          ],
+        ),
+      );
+      return f;
   }
 
   @override
   Widget build(BuildContext context) {
+  f = _drowerListTarefa();
+
     return DefaultTabController(
       length: tabs.length,
-      // The Builder widget is used to have a different BuildContext to access
-      // closest DefaultTabController.
       child: Builder(builder: (BuildContext context) {
         final TabController tabController = DefaultTabController.of(context);
         tabController.addListener(() {
@@ -246,8 +290,10 @@ Widget _bodyListFuncionarios(){
 
           }
         });
-        return Scaffold(
+
+    return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         centerTitle: true,
         title:const Text('Opções De ADM',
           style: TextStyle(
@@ -264,42 +310,21 @@ Widget _bodyListFuncionarios(){
         }),
         bottom: TabBar(
           tabs: tabs ,
+          onTap: (int indexTab){
+            if(indexTab == 0){
+              drowerMode = 'Adicionar Funcionario';
+            }else{
+              drowerMode = 'Adicionar Tarefa';
+            }
+            setState(() {
+              
+            });
+          }
         ),
-        backgroundColor: Colors.black,
       ),
-
       body: _bodyListTarefaPage(),
 
-      endDrawer: Drawer(
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                children: <Widget>[
-                  const SizedBox(
-                    height: 200,
-                    child: Text('adicionar Funcionario'),
-                    //TODO:se tela funcionario, se nao tela tarefas
-                  ),
-                  TextField(
-                    controller: nomeControler,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      hintText: hinttxt,
-                    ),
-                    onChanged: (text){
-                      funcionarioSelecionado.nome = text;
-                    },
-                  ),
-                  const Expanded(
-                    child: SizedBox()
-                  )
-                ],
-              )
-            )
-          ],
-        ),
-      ),
+      endDrawer: f,
       floatingActionButton:
         FloatingActionButton(
           foregroundColor: Colors.white,

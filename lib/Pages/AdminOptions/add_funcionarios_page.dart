@@ -97,7 +97,7 @@ class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
         leading: Builder(builder: (BuildContext context){
           return BackButton(
             onPressed: (){
-              Navigator.of(context).pushReplacementNamed(RouteNames.rotaListFuncionarioPage);
+              Navigator.of(context).pushReplacementNamed(RouteNames.rotaListTarefaPage);
             },
           );
         }),
