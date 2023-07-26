@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:screenshot/screenshot.dart';
 import '../helpers/route_names.dart';
 import '../helpers/database_helper.dart';
+import '../models/screenshot.dart';
 
 class StartPage extends StatefulWidget {
   const StartPage({super.key});
@@ -13,7 +15,8 @@ class _StartPageState extends State<StartPage> {
 
   DatabaseHelper db = DatabaseHelper();
   bool finalizar = false;
- 
+  final ScreenshotController _screenshotController = ScreenshotController(); 
+  final ScreenshotOps _screenshot = ScreenshotOps();
 
   Widget _bodyStartPage(){
     return Row(
@@ -80,58 +83,73 @@ class _StartPageState extends State<StartPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.lightBlue.shade100,
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Axtor',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 50.0,
+    return Screenshot(
+      controller: _screenshotController,
+      child: Scaffold(
+        backgroundColor: Colors.lightBlue.shade100,
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text('Axtor',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 50.0,
+            ),
           ),
+          backgroundColor: Colors.blue,
         ),
-        backgroundColor: Colors.blue,
+    
+        body: _bodyStartPage(),
+    
+        floatingActionButton:Stack(
+          children: [
+            Positioned(
+              right: 16.0,
+              bottom: 20.0,
+              child: FloatingActionButton(
+                heroTag: "btn1",
+                onPressed: () {
+                  Navigator.of(context).pushReplacementNamed(RouteNames.rotaListFuncionarioPage);
+                },
+                child: const Icon(Icons.add),
+              ),
+            ),
+            Positioned(
+              right: 16.0,
+              bottom: 90.0,
+              child: FloatingActionButton(
+                heroTag: "btn2",
+                onPressed: () {
+                  Navigator.of(context).pushReplacementNamed(RouteNames.rotaListTarefaPage);
+                },
+                child: const Icon(Icons.inbox_sharp),
+              ),
+            ),
+            Positioned(
+              right: 16.0,
+              bottom: 160.0,
+              child: FloatingActionButton(
+                heroTag: "btn3",
+                onPressed: () {
+                  Navigator.of(context).pushReplacementNamed(RouteNames.rotaAddTarefaNoFuncionarioPage);
+                },
+                child: const Icon(Icons.access_alarms),
+              ),
+            ),
+            Positioned(
+              right: 16.0,
+              bottom: 230.0,
+              child: FloatingActionButton(
+                heroTag: "btn4",
+                onPressed: ()async {
+                  _screenshotController.captureAndSave(await _screenshot.takePath());
+                  print('screenshot registrada!');
+                },
+                child: const Icon(Icons.screenshot),
+              ),
+            ),
+          ],
+        )
       ),
-
-      body: _bodyStartPage(),
-
-      floatingActionButton:Stack(
-        children: [
-          Positioned(
-            right: 16.0,
-            bottom: 20.0,
-            child: FloatingActionButton(
-              heroTag: "btn1",
-              onPressed: () {
-                Navigator.of(context).pushReplacementNamed(RouteNames.rotaListFuncionarioPage);
-              },
-              child: const Icon(Icons.add),
-            ),
-          ),
-          Positioned(
-            right: 16.0,
-            bottom: 90.0,
-            child: FloatingActionButton(
-              heroTag: "btn2",
-              onPressed: () {
-                Navigator.of(context).pushReplacementNamed(RouteNames.rotaListTarefaPage);
-              },
-              child: const Icon(Icons.inbox_sharp),
-            ),
-          ),
-          Positioned(
-            right: 16.0,
-            bottom: 160.0,
-            child: FloatingActionButton(
-              heroTag: "btn3",
-              onPressed: () {
-                Navigator.of(context).pushReplacementNamed(RouteNames.rotaAddTarefaNoFuncionarioPage);
-              },
-              child: const Icon(Icons.access_alarms),
-            ),
-          ),
-        ],
-      )
     );
   }
 }
