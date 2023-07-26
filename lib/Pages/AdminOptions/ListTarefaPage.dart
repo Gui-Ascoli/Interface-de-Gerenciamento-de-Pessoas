@@ -12,17 +12,13 @@ class ListTarefaPage extends StatefulWidget {
 
 class _ListTarefaPageState extends State<ListTarefaPage> {
 
- // bool apto = true;
   List<Tarefa> tarefa = [];
   DatabaseHelper db = DatabaseHelper();
   List<int> colorCodes = [50, 100];
 
-
   @override
   void initState() {
     super.initState();
-      //db.initialize();
-      
       db.getAllTarefas().then((lista) {
         setState(() {
           tarefa = lista;
@@ -32,58 +28,57 @@ class _ListTarefaPageState extends State<ListTarefaPage> {
 
   Widget _listaTarefas2(int index){
     return InkWell(
-            child:Container(
-              height: 100,
-              color: Colors.green[colorCodes[index % colorCodes.length]],
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      tarefa[index].descricao,
-                      style: const TextStyle(fontSize: 50),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: (){
-                      Navigator.of(context).pushReplacementNamed (RouteNames.rotaAddTarefaPage, arguments:tarefa[index] );
-                    },
-                    tooltip: "Editar Tarefa",
-                    icon: const Icon(Icons.edit),
-                  ),
-                  Container(
-                    width: 10,
-                  ),
-                  IconButton(
-                    onPressed: (){
-                      tarefa[index].delete();
-                    },
-                    tooltip: "Deletar Tarefa",
-                    icon: const Icon(Icons.delete),
-                  ),
-                  Container(
-                    width: 10,
-                  ),
-                ]
+      child:Container(
+        height: 100,
+        color: Colors.green[colorCodes[index % colorCodes.length]],
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Text(
+                tarefa[index].descricao,
+                style: const TextStyle(fontSize: 50),
               ),
             ),
- 
-            
-        );
+            IconButton(
+              onPressed: (){
+                Navigator.of(context).pushReplacementNamed (RouteNames.rotaAddTarefaPage, arguments:tarefa[index] );
+              },
+              tooltip: "Editar Tarefa",
+              icon: const Icon(Icons.edit),
+            ),
+            Container(
+              width: 10,
+            ),
+            IconButton(
+              onPressed: (){
+                tarefa[index].delete();
+              },
+              tooltip: "Deletar Tarefa",
+              icon: const Icon(Icons.delete),
+            ),
+            Container(
+              width: 10,
+            ),
+          ]
+        ),
+      ),  
+    );
   }
 
-Widget _bodyListTarefaPage(){
-  return ListView.builder(
-        padding: const EdgeInsets.all(15),
-        itemCount: tarefa.length,
-        itemBuilder: (context, index){
-          return _listaTarefas2(index);
+  Widget _bodyListTarefaPage(){
+    return ListView.builder(
+      padding: const EdgeInsets.all(15),
+      itemCount: tarefa.length,
+      itemBuilder: (context, index){
+        return _listaTarefas2(index);
       },
     );
-}
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
         leading: Builder(builder: (BuildContext context){
           return BackButton(
@@ -101,15 +96,16 @@ Widget _bodyListTarefaPage(){
         ),
         backgroundColor: Colors.blue,
       ),
-      body: _bodyListTarefaPage() ,
+
+      body: _bodyListTarefaPage(),
+
       floatingActionButton:
         FloatingActionButton(
           child: const Icon(Icons.add),
           onPressed: (){
             Navigator.of(context).pushReplacementNamed (RouteNames.rotaAddTarefaPage, arguments:null );
           }
-          
-      ),
+        ),
     );
   }
 }

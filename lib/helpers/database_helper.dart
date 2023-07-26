@@ -57,31 +57,16 @@ class DatabaseHelper {
     }
   }
 
-  Future<String> getTempoAtual() async {
-    Database db = await database;
-
-    final result = await db.rawQuery('SELECT datetime("now")');
-    final currentTimestamp = result.first.values.first as String;
-
-    return currentTimestamp;
-    //print('Timestamp atual: $currentTimestamp');
-  }
-
-
   Future<List<Funcionario>>getAllFuncionarios() async{
     Database db = await database;
-
     var resultado = await db.query("Funcionario");
-
     List<Funcionario>lista = 
     resultado.isNotEmpty ? resultado.map((c) => Funcionario.fromMap(c)).toList() : [];
-
     return lista;
   }
 
   Future<Categoria?> getCategoria(int id) async {
     Database db = await database;
-
     List<Map<String, dynamic>> maps = await db.query(
       "Categoria",
       columns: ['Id', 'Descricai'],
@@ -89,7 +74,6 @@ class DatabaseHelper {
       whereArgs: [id],
     );
 
-  //maps.length
     if (maps.isNotEmpty) {
       return Categoria.fromMap(maps.first);
     } else {
@@ -99,34 +83,25 @@ class DatabaseHelper {
 
   Future<List<Categoria>>getAllCategorias() async{
     Database db = await database;
-
     var resultado = await db.query("Categoria");
-
     List<Categoria>lista = 
     resultado.isNotEmpty ? resultado.map((c) => Categoria.fromMap(c)).toList() : [];
-
     return lista;
   }
 
   Future<List<Tarefa>>getAllTarefas() async{
     Database db = await database;
-
     var resultado = await db.query("Tarefa");
-
     List<Tarefa>lista = 
     resultado.isNotEmpty ? resultado.map((c) => Tarefa.fromMap(c)).toList() : [];
-
     return lista;
   }
 
   Future<List<TarefaDoFuncionario>>getAllTarefasDoFuncionario() async{
     Database db = await database;
-
     var resultado = await db.query("TarefaDoFuncionario");
-
     List<TarefaDoFuncionario>lista = 
     resultado.isNotEmpty ? resultado.map((c) => TarefaDoFuncionario.fromMap(c)).toList() : [];
-
     return lista;
   }
 
@@ -134,20 +109,14 @@ class DatabaseHelper {
     Database db = await database;
     var resultado = await db.query("TimeStampTarefaDoFuncionario");
     List<TimeStampTarefaDoFuncionario> lista = resultado.isNotEmpty ? resultado.map((c) => TimeStampTarefaDoFuncionario.fromMap(c)).toList() : [];
-
     return lista;
   }
 
-
-
-//metodo retorna toda a lista funcionarios
   //metodo obtem o numero de objetos nome no banco de dados
   Future<int?>getNomesCount() async{
     Database db = await database;
     List<Map<String,dynamic>> x = await db.rawQuery("SELECT COUNT (*) from Funcionario");
-
-      int? resultado = Sqflite.firstIntValue(x);
-      return resultado;
-
+    int? resultado = Sqflite.firstIntValue(x);
+    return resultado;
   }
 }
