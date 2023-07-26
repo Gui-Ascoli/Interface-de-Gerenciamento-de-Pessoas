@@ -16,9 +16,11 @@ class AddTarefaNoFuncionarioPage extends StatefulWidget {
 
 class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage> {
  
+  Color? conColorToBack;
   bool selected = false;
   bool modeSwitch = false;
-  
+  int contador = 0;
+  List<bool> modeSwitchs = [];
   Funcionario funcionarioSelecionado = Funcionario();
   TarefaDoFuncionario tarefaFuncionario = TarefaDoFuncionario();
   List<TarefaDoFuncionario> tarefaDoFuncionario = [];
@@ -52,20 +54,39 @@ class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage>
         });
       });
 
+      modeSwitchs.add(false);
     }
-/*
-  bool  _mostraDebug (){
-    return (element) => element.id_funcionario == funcionarioSelecionado.id && element.id_tarefa == t.id;
+
+
+  void _getIdFuncionario(int coordenada){
+    funcionarioSelecionado = funcionarios[coordenada];
   }
-*/
 
-  bool _validaCriterio(Tarefa t) {
- //(tarefaDoFuncionario.any((element) => element.id_funcionario == id_fs && element.id_tarefa == tarefas[index].id)[index].id_tarefa == tarefas[index].id)? modeSwitch : !modeSwitch,
- if (selected) {
-  return tarefaDoFuncionario.any((element) => element.id_funcionario == funcionarioSelecionado.id && element.id_tarefa == t.id);
+  void _getIdTarefa(int coordenada){
+    tarefaFuncionario.id_tarefa = tarefas[coordenada].id;
+  }
 
-  //return tarefaDoFuncionario.any(_mostraDebug());
- }
+
+  void _atualizeListaTarefasDoFuncionario(){
+    db.getAllTarefasDoFuncionario().then((lista) {
+        setState(() {
+          tarefaDoFuncionario = lista;
+        });
+      });
+  }
+
+  bool  _mostraDebug (TarefaDoFuncionario element, Tarefa t){
+    return element.id_funcionario == funcionarioSelecionado.id && element.id_tarefa == t.id;
+  }
+
+
+  bool _validaCriterio(Tarefa t, int coordenada) {
+    if (selected) {
+      //return tarefaDoFuncionario.any((element) => element.id_funcionario == funcionarioSelecionado.id && element.id_tarefa == t.id);
+       modeSwitch = tarefaDoFuncionario.any((element) => _mostraDebug(element, t));
+       modeSwitchs.insert(coordenada, modeSwitch);
+      return  modeSwitch;
+    }
 
     return false;
   }
@@ -87,20 +108,19 @@ class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage>
                     width: 10,
                   ),
                   Switch( 
-                    //value: (tarefaDoFuncionario[index].id_tarefa == tarefas[index].id)?  modeSwitch : !modeSwitch,
-                    //value: (tarefaDoFuncionario[index].id_tarefa == tarefas[index].id)? modeSwitch : !modeSwitch,
-                    value: _validaCriterio(tarefas[index] as Tarefa),// (tarefaDoFuncionario.any((element) => element.id_funcionario == id_fs && element.id_tarefa == tarefas[index].id)[index].id_tarefa == tarefas[index].id)? modeSwitch : !modeSwitch,
+                    value: (modeSwitchs[index] == _validaCriterio(tarefas[index],index))? modeSwitchs[index] : modeSwitchs[index],
                     onChanged: (value){
-                      modeSwitch = !modeSwitch;
-                      setState(() {
-                        if(modeSwitch == true){
-                          tarefaFuncionario.id_tarefa = tarefas[index].id;
-                          //tarefaFuncionario.insert();
+                      super.setState(() {
+                        modeSwitchs[index] = !modeSwitchs[index];
+                        if(modeSwitchs[index] == true){
+                          _getIdTarefa(index);
+                          tarefaFuncionario.insert();
+                          _atualizeListaTarefasDoFuncionario();
                         }else{
-                          tarefaFuncionario.id_tarefa = tarefas[index].id;
-                          //tarefaFuncionario.delete();
+                          _getIdTarefa(index);
+                          tarefaFuncionario.delete();
+                          _atualizeListaTarefasDoFuncionario();
                         }
-                        
                       });
                     },
                   ),
@@ -110,8 +130,6 @@ class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage>
                 ]
               ),
             ),
- 
-            
         );
   }
 
@@ -141,13 +159,14 @@ class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage>
               setState(() {
                 selected = !selected;
                 if(selected == true){
-                  funcionarioSelecionado = funcionarios[index];
+                  _getIdFuncionario(index);
                   containerIndex = funcionarios[index].nome;
+                  conColorToBack = Colors.blue[colorCodes[index % colorCodes.length]];
                   containerColor = Colors.grey.shade200;
                   tarefaFuncionario.id_funcionario = funcionarios[index].id;
 
                 }else{
-                  containerColor = Colors.blue[colorCodes[index % colorCodes.length]];
+                  containerColor = conColorToBack;
                 }
               }
             );
@@ -178,7 +197,7 @@ class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage>
           );
         }),
         centerTitle: true,
-        title: const Text('Axtor',
+        title: const Text('Designar Tarefas Aos Funcionarios',
           style: TextStyle(
             color: Colors.black,
             fontSize: 50.0,
