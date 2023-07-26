@@ -1,10 +1,12 @@
 import 'package:banco/Pages/CustomAppBar.dart';
 import 'package:banco/models/Funcionario.dart';
+import 'package:banco/models/TimeStampTarefaDoFuncionario.dart';
 import 'package:flutter/material.dart';
 
 import '../helpers/RouteNames.dart';
 import '../helpers/database_helper.dart';
 import '../models/Tarefa.dart';
+import '../models/TarefaDoFuncionario.dart';
 
 
 class RegisterPage extends StatefulWidget {
@@ -16,18 +18,26 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
 
+  DatabaseHelper db = DatabaseHelper();
+  bool isSaved = false;
+  bool? finalizar;
   bool selected = false;
+  bool apto = false;
+  Color? conColorToBack;
+  Color? containerColor = Colors.blue;
+  Funcionario funcionarioSelecionado = Funcionario();
+  TimeStampTarefaDoFuncionario iniciarParar= TimeStampTarefaDoFuncionario();
   List<Tarefa> tarefas = [];
   List<Funcionario> funcionarios = [];
+  List<TarefaDoFuncionario> tarefaDoFuncionario = [];
+  List<TimeStampTarefaDoFuncionario> timeStampTarefaDoFuncionario = [];
   List<int> colorCodes = [200, 250];
-  DatabaseHelper db = DatabaseHelper();
-  Color? containerColor = Colors.blue;
   String containerIndex = '';
+  String tempoAtual = '';
 
   @override
   void initState() {
     super.initState();
-      //db.initialize();
 
       db.getAllFuncionarios().then((lista) {
         setState(() {
@@ -35,35 +45,116 @@ class _RegisterPageState extends State<RegisterPage> {
         });
       });
 
-
       db.getAllTarefas().then((lista) {
-        setState(() {
+        setState((){
           tarefas = lista;
         });
       });
       
-    }
+      db.getAllTarefasDoFuncionario().then((lista) {
+        setState(() {
+          tarefaDoFuncionario = lista;
+        });
+      });
 
+      db.getAllTimeStampTarefaDoFuncionario().then((lista) {
+        setState((){
+          timeStampTarefaDoFuncionario = lista;
+        });
+      });
+
+      db.getTempoAtual().then((lista) {
+        setState(() {
+          tempoAtual = lista;
+        });
+      });
+  }
+
+  void _getIdFuncionario(int coordenada){
+    iniciarParar.id_funcionario = funcionarios[coordenada].id;
+  }
+  void _getIdTarefa(int coordenada){
+    iniciarParar.id_tarefa = tarefas[coordenada].id;
+  }
+
+  bool  _mostraDebug (TarefaDoFuncionario element, int index){
+    return element.id_funcionario == funcionarioSelecionado.id && element.id_tarefa == index;
+  }
+
+
+  void _tarefaCadastrada(int coordenada) {
+    if (selected) {
+      coordenada = coordenada + 1; // adapta o valor para pegar a tarefa correta
+      apto = tarefaDoFuncionario.any((element) => _mostraDebug(element, coordenada));
+    }
+  }
+
+
+  bool  _verDebug (TimeStampTarefaDoFuncionario element, int index){
+    return element.id_funcionario == funcionarioSelecionado.id && element.id_tarefa == index && element.start_timestamp!.isNotEmpty && element.start_timestamp!.isEmpty;
+  }
+
+
+  void _timeStampCadastrado(int coordenada) {
+    if (selected) {
+      coordenada = coordenada + 1; // adapta o valor para pegar a tarefa correta
+      isSaved = timeStampTarefaDoFuncionario.any((element) => _verDebug(element, coordenada));
+    }
+  }
+
+   bool  _olharDebug (TimeStampTarefaDoFuncionario element, int index){
+    return element.id_funcionario == funcionarioSelecionado.id && element.id_tarefa == index && element.start_timestamp!.isNotEmpty && element.start_timestamp!.isEmpty;
+  }
+
+
+  void _timeStampFinalizado(int coordenada) {
+    if (selected) {
+      coordenada = coordenada + 1; // adapta o valor para pegar a tarefa correta
+      isSaved = timeStampTarefaDoFuncionario.any((element) => _olharDebug(element, coordenada));
+    }
+  }
 
   Widget _listaTarefas(int index){
-    return InkWell(
-            child:Container(
-              height: 100,
-              color: containerColor = Colors.amber[colorCodes[index % colorCodes.length]],
-              child: Center(
-                child: Text(
-                  tarefas[index].descricao,
-                  style: const TextStyle(fontSize: 50),
-                ),
-              ),
+    _tarefaCadastrada(index);
+    if(apto == true){
+      return InkWell(
+        child:Container(
+          height: 100,
+          color: containerColor = Colors.green[colorCodes[index % colorCodes.length]],
+          child: Center(
+            child: Text(
+              tarefas[index].descricao,
+              style: const TextStyle(fontSize: 50),
             ),
-            onTap: () {
-              setState(() {
-                selected = true;
-              }
-            );
-          },
-        );
+          ),
+        ),
+        onTap: () {
+          _getIdTarefa(index);
+          if (finalizar == true) {
+            iniciarParar.stop_timestamp = tempoAtual;
+            iniciarParar.update();
+            Navigator.of(context).pushReplacementNamed(RouteNames.rotaStartPage);
+          }else{
+            _timeStampCadastrado(index);
+            if(isSaved == false){
+              //exibir aviso de cadastrado
+              iniciarParar.start_timestamp = tempoAtual;
+              iniciarParar.insert();
+              Navigator.of(context).pushReplacementNamed(RouteNames.rotaStartPage);
+            }else{
+              //exibir aviso de nao cadastrado
+              Navigator.of(context).pushReplacementNamed(RouteNames.rotaStartPage);
+            }
+            
+          }
+        }
+      );    
+    }else{
+      return Container(
+        height: 1,
+        color: Colors.transparent,
+      );
+    }
   }
 
   Widget _bodyTarefasPage(){
@@ -78,30 +169,34 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _listaFuncionarios(int index){
     return InkWell(
-            child:Container(
-              height: 100,
-              color:(containerIndex == funcionarios[index].nome) ? containerColor : Colors.blue[colorCodes[index % colorCodes.length]] ,
-              child: Center(
-                child: Text(
-                  funcionarios[index].nome,
-                  style: const TextStyle(fontSize: 50),
-                ),
-              ),
-            ),
-            onTap: () {
-              setState(() {
-                selected = !selected;
-                if(selected == true){
-                  containerIndex = funcionarios[index].nome;
-                  containerColor = Colors.grey.shade200;
+      child:Container(
+        height: 100,
+        color:(containerIndex == funcionarios[index].nome) ? containerColor : Colors.blue[colorCodes[index % colorCodes.length]] ,
+        child: Center(
+          child: Text(
+            funcionarios[index].nome,
+            style: const TextStyle(fontSize: 50),
+          ),
+        ),
+      ),
+      onTap: () {
+        _getIdFuncionario(index);
+        setState(() {
+          selected = !selected;
+          if(selected == true){
+            funcionarioSelecionado.id = funcionarios[index].id;
+            containerIndex = funcionarios[index].nome;
+            conColorToBack = Colors.blue[colorCodes[index % colorCodes.length]];
+            containerColor = Colors.grey.shade200;
+            if(finalizar == true){
 
-                }else{
-                  containerColor = Colors.blue[colorCodes[index % colorCodes.length]];
-                }
-              }
-            );
-          },
-        );
+            }
+          }else{
+            containerColor = conColorToBack;
+          }
+        });
+      }
+    );
   }
 
   Widget _bodyRegisterPage(){
@@ -118,11 +213,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     
     final routeSettings = ModalRoute.of(context)?.settings;
-    final startStop = routeSettings?.arguments as bool; //recebe o valor da variavel "finalizar" que vem da tela "startPage"(carrega a escolha de iniciar ou finalizar uma tarefa)
-
-    if(startStop == true){
-    }else{
-    }
+    finalizar= routeSettings?.arguments as bool; //recebe o valor da variavel "finalizar" que vem da tela "startPage"(carrega a escolha de iniciar ou finalizar uma tarefa)
 
     return Scaffold(
       backgroundColor: Colors.lightBlue.shade100,
@@ -134,7 +225,7 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
           if (selected == true)
             Expanded(
-            child:_bodyTarefasPage(),
+              child:_bodyTarefasPage(),
             ),
         ],
       ),
