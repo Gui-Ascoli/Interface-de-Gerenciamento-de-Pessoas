@@ -1,6 +1,7 @@
 import 'package:banco/models/TarefaDoFuncionario.dart';
 import 'package:flutter/material.dart';
 
+import '../../helpers/RouteNames.dart';
 import '../../helpers/database_helper.dart';
 import '../../models/Funcionario.dart';
 import '../../models/Tarefa.dart';
@@ -15,6 +16,7 @@ class AddTarefaNoFuncionarioPage extends StatefulWidget {
 class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage> {
  
   bool selected = false;
+  bool modeSwitch = false;
   
   TarefaDoFuncionario tarefaFuncionario = TarefaDoFuncionario();
   List<Tarefa> tarefas = [];
@@ -35,13 +37,12 @@ class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage>
         });
       });
 
-/*
       db.getAllTarefas().then((lista) {
         setState(() {
           tarefas = lista;
         });
       });
-      */
+
     }
 
 
@@ -58,20 +59,19 @@ class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage>
                       style: const TextStyle(fontSize: 50),
                     ),
                   ),
- 
-                  
                   Container(
                     width: 10,
                   ),
                   Switch( 
-                    value: false,
+                    value: modeSwitch,
                     onChanged: (value){
+                      modeSwitch = !modeSwitch;
                       setState(() {
-                        value = !value;
-                        if(value == true){
+                        if(modeSwitch == true){
                           tarefaFuncionario.id_tarefa = tarefas[index].id;
                           tarefaFuncionario.insert();
                         }else{
+                          tarefaFuncionario.id_tarefa = tarefas[index].id;
                           tarefaFuncionario.delete();
                         }
                         
@@ -143,6 +143,13 @@ class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage>
     return Scaffold(
       backgroundColor: Colors.lightBlue.shade100,
       appBar: AppBar(
+        leading: Builder(builder: (BuildContext context){
+          return BackButton(
+            onPressed: (){
+              Navigator.of(context).pushReplacementNamed(RouteNames.rotaStartPage);
+            },
+          );
+        }),
         centerTitle: true,
         title: const Text('Axtor',
           style: TextStyle(
@@ -159,7 +166,7 @@ class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage>
           ),
           if (selected == true)
             Expanded(
-            child:_bodyRegisterPage(),
+            child:_bodyTarefasPage(),
             ),
         ],
       ),

@@ -52,9 +52,9 @@ class TarefaDoFuncionario{
 
 
   TarefaDoFuncionario({int? id = null,int? id_funcionario = null,int? id_tarefa = null}){
-    this.id;
-    this.id_funcionario;
-    this.id_tarefa;
+    this.id = id;
+    this.id_funcionario = id_funcionario;
+    this.id_tarefa = id_tarefa;
   }
 
 }

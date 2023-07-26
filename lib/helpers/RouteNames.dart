@@ -4,7 +4,8 @@ class RouteNames{
   static final rotaAddTarefaPage = '/AddTarefaPage';
   static final rotaRegisterPage = '/RegisterPage';
   static final rotaTasksPage = '/TasksPage';
-  static final rotaAdminOptionsPage = '/AdminOptionsPage';
+  static final rotaListFuncionarioPage = '/ListFuncionarioPage';
+  static final rotaListTarefaPage = '/ListTarefaPage';
   static final rotaAddFuncionariosPage = '/AddFuncionariosPage';
   
 
