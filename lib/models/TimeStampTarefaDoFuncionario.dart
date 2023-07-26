@@ -18,9 +18,9 @@ class TimeStampTarefaDoFuncionario{
 
   Future<int>update() async{
     Database db = await database!;
-    var resultado = await db.update(_tarefaTableNome,{'stop_timestamp': stop_timestamp},
-      where: "id_funcionario = ? and id_tarefa = ? and stop_timestamp is null",
-      whereArgs: [this.id_funcionario,this.id_tarefa]);
+    var resultado = await db.update(_tarefaTableNome,{'stop_timestamp': 'datetime("now")'},
+      where: "id_funcionario = ? and stop_timestamp is null",
+      whereArgs: [this.id_funcionario]);
     return resultado;
   }
 
@@ -54,13 +54,13 @@ class TimeStampTarefaDoFuncionario{
    //Fim
 
   late int id;
-  late String? start_timestamp;
-  late String? stop_timestamp;
+  late DateTime? start_timestamp;
+  late DateTime? stop_timestamp;
   late int? id_funcionario;
   late int? id_tarefa;
 
 
-  TimeStampTarefaDoFuncionario({String? start_timestamp , String? stop_timestamp , int? id_funcionario = null , int? id_tarefa = null}){
+  TimeStampTarefaDoFuncionario({DateTime? start_timestamp , DateTime? stop_timestamp , int? id_funcionario = null , int? id_tarefa = null}){
     this.start_timestamp = start_timestamp;
     this.stop_timestamp = stop_timestamp;
     this.id_funcionario = id_funcionario;
