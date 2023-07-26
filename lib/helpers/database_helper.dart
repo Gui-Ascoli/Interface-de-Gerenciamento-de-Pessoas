@@ -6,7 +6,6 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 import '../models/Tarefa.dart';
-import '../models/TarefaDoFuncionario.dart';
 
 class DatabaseHelper {
   DatabaseHelper._();
@@ -104,17 +103,6 @@ class DatabaseHelper {
 
     List<Tarefa>lista = 
     resultado.isNotEmpty ? resultado.map((c) => Tarefa.fromMap(c)).toList() : [];
-
-    return lista;
-  }
-
-    Future<List<TarefaDoFuncionario>>getAllTarefasDoFuncionario() async{
-    Database db = await database;
-
-    var resultado = await db.query("TarefaDoFuncionario");
-
-    List<TarefaDoFuncionario>lista = 
-    resultado.isNotEmpty ? resultado.map((c) => TarefaDoFuncionario.fromMap(c)).toList() : [];
 
     return lista;
   }

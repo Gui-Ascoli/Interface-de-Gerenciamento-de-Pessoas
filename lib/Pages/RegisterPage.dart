@@ -15,15 +15,13 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
 
   bool selected = false;
-  
 
+  Color? containerColor = Colors.blue;
  
   List<Tarefa> tarefas = [];
   List<Funcionario> funcionarios = [];
   List<int> colorCodes = [200, 250];
   DatabaseHelper db = DatabaseHelper();
-  Color? containerColor = Colors.blue;
-  String containerIndex = '';
 
   @override
   void initState() {
@@ -50,7 +48,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return InkWell(
             child:Container(
               height: 100,
-              color: containerColor = Colors.amber[colorCodes[index % colorCodes.length]],
+              color: Colors.amber[colorCodes[index % colorCodes.length]],
               child: Center(
                 child: Text(
                   tarefas[index].tarefa,
@@ -80,9 +78,8 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget _listaFuncionarios(int index){
     return InkWell(
             child:Container(
-              
               height: 100,
-              color:(containerIndex == funcionarios[index].nome) ? containerColor : Colors.blue[colorCodes[index % colorCodes.length]] ,
+              color: containerColor[colorCodes[index % colorCodes.length]],
               child: Center(
                 child: Text(
                   funcionarios[index].nome,
@@ -94,11 +91,8 @@ class _RegisterPageState extends State<RegisterPage> {
               setState(() {
                 selected = !selected;
                 if(selected == true){
-                  containerIndex = funcionarios[index].nome;
-                  containerColor = Colors.grey.shade200;
+                  containerColor = Colors.amber;
 
-                }else{
-                  containerColor = Colors.blue[colorCodes[index % colorCodes.length]];
                 }
               }
             );
@@ -108,12 +102,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _BodyRegisterPage(){
     return ListView.builder(
-          padding: const EdgeInsets.all(15),
-          itemCount: funcionarios.length,
-          itemBuilder: (context, index){
-            return _listaFuncionarios(index);
-        },
-      );
+        padding: const EdgeInsets.all(15),
+        itemCount: funcionarios.length,
+        itemBuilder: (context, index){
+          return _listaFuncionarios(index);
+      },
+    );
   }
 
   @override
