@@ -1,13 +1,13 @@
 
-import 'package:banco/Pages/AdminOptions/ListFuncionarioPage.dart';
-import 'package:banco/Pages/AdminOptions/AddFuncionariosPage.dart';
+import 'package:banco/Pages/AdminOptions/list_funcionario_page.dart';
+import 'package:banco/Pages/AdminOptions/add_funcionarios_page.dart';
 import 'package:flutter/material.dart';
-import 'package:banco/Pages/StartPage.dart';
-import 'package:banco/Pages/RegisterPage.dart';
-import '../helpers/RouteNames.dart';
-import 'AdminOptions/AddTarefaNoFuncionarioPage.dart';
-import 'AdminOptions/AddTarefaPage.dart';
-import 'AdminOptions/ListTarefaPage.dart';
+import 'package:banco/Pages/start_page.dart';
+import 'package:banco/Pages/register_page.dart';
+import '../helpers/route_names.dart';
+import 'AdminOptions/add_tarefa_no_funcionario_page.dart';
+import 'AdminOptions/add_tarefa_page.dart';
+import 'AdminOptions/list_tarefa_page.dart';
 
 class AppRouter extends StatelessWidget{
   const AppRouter({super.key});

@@ -1,9 +1,9 @@
-import 'package:banco/models/TarefaDoFuncionario.dart';
+import 'package:banco/helpers/route_names.dart';
+import 'package:banco/models/tarefa_do_funcionario.dart';
 import 'package:flutter/material.dart';
-import '../../helpers/RouteNames.dart';
 import '../../helpers/database_helper.dart';
-import '../../models/Funcionario.dart';
-import '../../models/Tarefa.dart';
+import '../../models/funcionario.dart';
+import '../../models/tarefa.dart';
 
 class AddTarefaNoFuncionarioPage extends StatefulWidget {
   const AddTarefaNoFuncionarioPage({super.key});
@@ -58,7 +58,7 @@ class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage>
     funcionarioSelecionado = funcionarios[coordenada];
   }
   void _getIdTarefa(int coordenada){
-    tarefaFuncionario.id_tarefa = tarefas[coordenada].id;
+    tarefaFuncionario.idTarefa = tarefas[coordenada].id;
   }
 
   void _atualizeListaTarefasDoFuncionario(){
@@ -70,7 +70,7 @@ class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage>
   }
 
   bool  _mostraDebug (TarefaDoFuncionario element, Tarefa t){
-    return element.id_funcionario == funcionarioSelecionado.id && element.id_tarefa == t.id;
+    return element.idFuncionario == funcionarioSelecionado.id && element.idTarefa == t.id;
   }
 
   bool _validaCriterio(Tarefa t, int coordenada) {
@@ -154,7 +154,7 @@ class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage>
             containerIndex = funcionarios[index].nome;
             conColorToBack = Colors.blue[colorCodes[index % colorCodes.length]];
             containerColor = Colors.grey.shade200;
-            tarefaFuncionario.id_funcionario = funcionarios[index].id;
+            tarefaFuncionario.idFuncionario = funcionarios[index].id;
           }else{
             containerColor = conColorToBack;
           }

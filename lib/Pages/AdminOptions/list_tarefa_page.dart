@@ -1,33 +1,32 @@
 import 'package:banco/helpers/database_helper.dart';
+import 'package:banco/models/tarefa.dart';
 import 'package:flutter/material.dart';
-import '../../helpers/RouteNames.dart';
-import '../../models/Funcionario.dart';
+import '../../helpers/route_names.dart';
 
-class ListFuncionarioPage extends StatefulWidget {
-  const ListFuncionarioPage({super.key});
+class ListTarefaPage extends StatefulWidget {
+  const ListTarefaPage({super.key});
 
   @override
-  State<ListFuncionarioPage> createState() => _ListFuncionarioPageState();
+  State<ListTarefaPage> createState() => _ListTarefaPageState();
 }
 
-class _ListFuncionarioPageState extends State<ListFuncionarioPage> {
+class _ListTarefaPageState extends State<ListTarefaPage> {
 
-  List<Funcionario> funcionarios = [];
+  List<Tarefa> tarefa = [];
   DatabaseHelper db = DatabaseHelper();
   List<int> colorCodes = [50, 100];
 
   @override
   void initState() {
     super.initState();
-      
-      db.getAllFuncionarios().then((lista) {
+      db.getAllTarefas().then((lista) {
         setState(() {
-          funcionarios = lista;
+          tarefa = lista;
         });
       });
     }
 
-  Widget _listaFuncionarios2(int index){
+  Widget _listaTarefas2(int index){
     return InkWell(
       child:Container(
         height: 100,
@@ -36,53 +35,50 @@ class _ListFuncionarioPageState extends State<ListFuncionarioPage> {
           children: <Widget>[
             Expanded(
               child: Text(
-                funcionarios[index].nome,
+                tarefa[index].descricao,
                 style: const TextStyle(fontSize: 50),
               ),
             ),
             IconButton(
               onPressed: (){
-                if(funcionarios[index].apto == true){
-                  Navigator.of(context).pushReplacementNamed (RouteNames.rotaAddFuncionariosPage, arguments:funcionarios[index] );
-                }
+                Navigator.of(context).pushReplacementNamed (RouteNames.rotaAddTarefaPage, arguments:tarefa[index] );
               },
-              tooltip: "Editar funcionario",
+              tooltip: "Editar Tarefa",
               icon: const Icon(Icons.edit),
             ),
             Container(
               width: 10,
             ),
-            Switch( 
-              value: funcionarios[index].apto,
-              onChanged: (value){
-                setState(() {
-                  funcionarios[index].apto = !funcionarios[index].apto;
-                  funcionarios[index].update();
-                });
+            IconButton(
+              onPressed: (){
+                tarefa[index].delete();
               },
+              tooltip: "Deletar Tarefa",
+              icon: const Icon(Icons.delete),
             ),
             Container(
               width: 10,
             ),
           ]
         ),
-      ),
+      ),  
     );
   }
 
-Widget _bodyNewRootPage(){
-  return ListView.builder(
-    padding: const EdgeInsets.all(15),
-    itemCount: funcionarios.length,
-    itemBuilder: (context, index){
-      return _listaFuncionarios2(index);
-    },
-  );
-}
+  Widget _bodyListTarefaPage(){
+    return ListView.builder(
+      padding: const EdgeInsets.all(15),
+      itemCount: tarefa.length,
+      itemBuilder: (context, index){
+        return _listaTarefas2(index);
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
         leading: Builder(builder: (BuildContext context){
           return BackButton(
@@ -92,7 +88,7 @@ Widget _bodyNewRootPage(){
           );
         }),
         centerTitle: true,
-        title:const Text('Lista De Funcionarios',
+        title:const Text('Lista De Tarefas',
           style: TextStyle(
             color: Colors.black,
             fontSize: 50.0,
@@ -100,14 +96,16 @@ Widget _bodyNewRootPage(){
         ),
         backgroundColor: Colors.blue,
       ),
-      body: _bodyNewRootPage() ,
+
+      body: _bodyListTarefaPage(),
+
       floatingActionButton:
         FloatingActionButton(
           child: const Icon(Icons.add),
           onPressed: (){
-            Navigator.of(context).pushReplacementNamed (RouteNames.rotaAddFuncionariosPage, arguments:null );
+            Navigator.of(context).pushReplacementNamed (RouteNames.rotaAddTarefaPage, arguments:null );
           }
-      ),
+        ),
     );
   }
 }

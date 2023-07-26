@@ -6,18 +6,17 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:banco/models/Categoria.dart';
-import 'package:banco/models/Funcionario.dart';
-import 'package:banco/models/StopWatchTarefa.dart';
+import 'package:banco/models/funcionario.dart';
+import 'package:banco/models/stop_watch_tarefa.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import '../models/Tarefa.dart';
-import '../models/TarefaDoFuncionario.dart';
+import '../models/tarefa.dart';
+import '../models/tarefa_do_funcionario.dart';
 
 class DatabaseHelper {
   DatabaseHelper._();
 
   FutureOr<void> initConection() async{
-    this.database;
+    database;
 }
   //static Database? _database;
   static final DatabaseHelper _instance = DatabaseHelper._();
@@ -36,23 +35,23 @@ class DatabaseHelper {
     return _database!;
   }
 
-  Future<FutureOr<void>> CreateTable() async {
+  Future<FutureOr<void>> createTable() async {
     var db = await database;
     db.transaction((txn) async {
-      await txn.execute(Funcionario().CreateScript);
-      await txn.execute(StopWatchTarefa().CreateScript);
-      await txn.execute(Tarefa().CreateScript);
-      await txn.execute(TarefaDoFuncionario().CreateScript);
+      await txn.execute(Funcionario().createScript);
+      await txn.execute(StopWatchTarefa().createScript);
+      await txn.execute(Tarefa().createScript);
+      await txn.execute(TarefaDoFuncionario().createScript);
     });
   }
   
    FutureOr<void> dropDB()async{
     var db = await database;
     await db.transaction((txn) async{
-      await txn.execute(Funcionario().DropScript);
-      await  txn.execute(StopWatchTarefa().DropScript);
-      await  txn.execute(Tarefa().DropScript);
-      await  txn.execute(TarefaDoFuncionario().DropScript);
+      await txn.execute(Funcionario().dropScript);
+      await  txn.execute(StopWatchTarefa().dropScript);
+      await  txn.execute(Tarefa().dropScript);
+      await  txn.execute(TarefaDoFuncionario().dropScript);
     }
     );
   }
@@ -71,26 +70,6 @@ class DatabaseHelper {
     }
 
   }
-/*
-  void preencherTabelas(){
-    Funcionario f = Funcionario(id:1,nome:"anderson", apto: true);
-    
-  }
-*/
-/*
-  Future<Database> createAllTables() async {
-  final databasePath = await getDatabasesPath();
-  final path = join(databasePath, 'my_database.db');
-  final database = openDatabase(
-    join(path),
-    onCreate: (db, version) {
-      // Código para criar tabelas e definir esquemas
-    },
-    version: 1,
-  );
-}
-  }
-*/
 
 //metodo retorna um item da lista (VIDEO)/ o primeiro item da lista
   Future<Funcionario?> getFuncionario(int id) async {
@@ -115,30 +94,6 @@ class DatabaseHelper {
     var resultado = await db.query("Funcionario");
     List<Funcionario>lista = 
     resultado.isNotEmpty ? resultado.map((c) => Funcionario.fromMap(c)).toList() : [];
-    return lista;
-  }
-
-  Future<Categoria?> getCategoria(int id) async {
-    Database db = await database;
-    List<Map<String, dynamic>> maps = await db.query(
-      "Categoria",
-      columns: ['Id', 'Descricao'],
-      where: 'Id = ?',
-      whereArgs: [id],
-    );
-
-    if (maps.isNotEmpty) {
-      return Categoria.fromMap(maps.first);
-    } else {
-      return null;
-    }
-  }
-
-  Future<List<Categoria>>getAllCategorias() async{
-    Database db = await database;
-    var resultado = await db.query("Categoria");
-    List<Categoria>lista = 
-    resultado.isNotEmpty ? resultado.map((c) => Categoria.fromMap(c)).toList() : [];
     return lista;
   }
 

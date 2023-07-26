@@ -8,7 +8,7 @@ class TarefaDoFuncionario{
 
   Future<int?>insert() async{
     Database db = await database!;
-    var resultado = await db.insert(_tarefaTableNome,this.toMap());
+    var resultado = await db.insert(_tarefaTableNome,toMap());
     return resultado;
   }
 
@@ -16,37 +16,34 @@ class TarefaDoFuncionario{
     var db = await database!;
     var resultado = await db.delete(_tarefaTableNome,
       where: "id_funcionario = ? and id_tarefa = ?",
-      whereArgs: [this.id_funcionario,this.id_tarefa]);
+      whereArgs: [idFuncionario,idTarefa]);
     return resultado;
   }
 
   Map<String,dynamic> toMap(){
     var map = <String,dynamic>{
-      'id_funcionario' : id_funcionario,
-      'id_tarefa' :id_tarefa,
+      'id_funcionario' : idFuncionario,
+      'id_tarefa' :idTarefa,
     };
     return map;
   }
 
   TarefaDoFuncionario.fromMap(Map<String,dynamic> map){
-    id_funcionario = map['id_funcionario'];
-    id_tarefa = map['id_tarefa'];
+    idFuncionario = map['id_funcionario'];
+    idTarefa = map['id_tarefa'];
   }
 
-  late String CreateScript = '''CREATE TABLE IF NOT EXISTS TarefaDoFuncionario (
+  late String createScript = '''CREATE TABLE IF NOT EXISTS TarefaDoFuncionario (
                                   id_funcionario INTEGER,
                                   id_tarefa INTEGER
                                 )''';
                                 
-  late String DropScript = 'DROP TABLE IF EXISTS TarefaDoFuncionario ';
+  late String dropScript = 'DROP TABLE IF EXISTS TarefaDoFuncionario ';
 
    //Fim
 
-  late int? id_funcionario;
-  late int? id_tarefa;
+  late int? idFuncionario;
+  late int? idTarefa;
 
-  TarefaDoFuncionario({int? id_funcionario = null,int? id_tarefa = null}){
-    this.id_funcionario = id_funcionario;
-    this.id_tarefa = id_tarefa;
-  }
+  TarefaDoFuncionario({this.idFuncionario,this.idTarefa});
 }

@@ -1,11 +1,11 @@
-import 'package:banco/Pages/CustomAppBar.dart';
-import 'package:banco/models/Funcionario.dart';
-import 'package:banco/models/StopWatchTarefa.dart';
+import 'package:banco/Pages/custom_app_bar.dart';
+import 'package:banco/models/funcionario.dart';
+import 'package:banco/models/stop_watch_tarefa.dart';
 import 'package:flutter/material.dart';
-import '../helpers/RouteNames.dart';
+import '../helpers/route_names.dart';
 import '../helpers/database_helper.dart';
-import '../models/Tarefa.dart';
-import '../models/TarefaDoFuncionario.dart';
+import '../models/tarefa.dart';
+import '../models/tarefa_do_funcionario.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -55,15 +55,15 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _getIdFuncionario(int coordenada){
-    timerTarefa.id_funcionario = funcionarios[coordenada].id;
+    timerTarefa.idFuncionario = funcionarios[coordenada].id;
   }
   void _getIdTarefa(int coordenada){
-    timerTarefa.id_tarefa = tarefas[coordenada].id;
+    timerTarefa.idTarefa = tarefas[coordenada].id;
   }
 
 
   bool  _mostraDebug (TarefaDoFuncionario element){
-    return element.id_funcionario == timerTarefa.id_funcionario && element.id_tarefa == timerTarefa.id_tarefa;
+    return element.idFuncionario == timerTarefa.idFuncionario && element.idTarefa == timerTarefa.idTarefa;
   }
   void _tarefaCadastrada() {
     if (selected) {
