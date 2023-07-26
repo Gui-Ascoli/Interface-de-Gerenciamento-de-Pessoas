@@ -1,6 +1,6 @@
 import 'package:banco/Pages/CustomAppBar.dart';
 import 'package:banco/models/Funcionario.dart';
-import 'package:banco/models/TimeStampTarefaDoFuncionario.dart';
+import 'package:banco/models/StopWatchTarefa.dart';
 import 'package:flutter/material.dart';
 import '../helpers/RouteNames.dart';
 import '../helpers/database_helper.dart';
@@ -22,13 +22,14 @@ class _RegisterPageState extends State<RegisterPage> {
   bool tarefaCadastrada = false;
   Color? conColorToBack;
   Color? containerColor = Colors.blue;
-  TimeStampTarefaDoFuncionario iniciarParar= TimeStampTarefaDoFuncionario();
+  StopWatchTarefa timerTarefa= StopWatchTarefa();
   List<Tarefa> tarefas = [];
   List<Funcionario> funcionarios = [];
   List<TarefaDoFuncionario> tarefaDoFuncionario = [];
   List<int> colorCodes = [200, 250];
-  String containerIndex = '';
-  String tempoAtual = '';
+  String snackbarFuncionario = '';
+  String snackbarTarefa = '';
+  SnackBar? snackBar;
 
   @override
   void initState() {
@@ -54,20 +55,46 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _getIdFuncionario(int coordenada){
-    iniciarParar.id_funcionario = funcionarios[coordenada].id;
+    timerTarefa.id_funcionario = funcionarios[coordenada].id;
   }
   void _getIdTarefa(int coordenada){
-    iniciarParar.id_tarefa = tarefas[coordenada].id;
+    timerTarefa.id_tarefa = tarefas[coordenada].id;
   }
 
 
   bool  _mostraDebug (TarefaDoFuncionario element){
-    return element.id_funcionario == iniciarParar.id_funcionario && element.id_tarefa == iniciarParar.id_tarefa;
+    return element.id_funcionario == timerTarefa.id_funcionario && element.id_tarefa == timerTarefa.id_tarefa;
   }
   void _tarefaCadastrada() {
     if (selected) {
       tarefaCadastrada = tarefaDoFuncionario.any((element) => _mostraDebug(element));
     }
+  }
+
+  void _snackBarStop(){
+    snackBar = SnackBar(
+      content: Text('$snackbarFuncionario sua tarefa em aberto foi finalizada!'),
+      duration: const Duration(seconds: 3),
+      action: SnackBarAction(
+        label: 'Fechar',
+        onPressed: () {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        },
+      ),
+    );
+  }
+
+  void _snackBarStart(){
+    snackBar = SnackBar(
+      content: Text('$snackbarTarefa foi iniciada!'),
+      duration: const Duration(seconds: 3),
+      action: SnackBarAction(
+        label: 'Fechar',
+        onPressed: () {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        },
+      ),
+    );
   }
 
   Widget _listaTarefas(int index){
@@ -86,8 +113,11 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         ),
         onTap: () {
+          snackbarTarefa = tarefas[index].descricao;
+          _snackBarStart();
+          ScaffoldMessenger.of(context).showSnackBar(snackBar!);
           _getIdTarefa(index);
-          iniciarParar.inserirTimeStamp();
+          timerTarefa.inserirTimeStamp();
           Navigator.of(context).pushReplacementNamed(RouteNames.rotaStartPage);
         }
       );    
@@ -113,7 +143,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return InkWell(
       child:Container(
         height: 100,
-        color:(containerIndex == funcionarios[index].nome) ? containerColor : Colors.blue[colorCodes[index % colorCodes.length]] ,
+        color:(snackbarFuncionario == funcionarios[index].nome) ? containerColor : Colors.blue[colorCodes[index % colorCodes.length]] ,
         child: Center(
           child: Text(
             funcionarios[index].nome,
@@ -126,10 +156,13 @@ class _RegisterPageState extends State<RegisterPage> {
         setState(() {
           selected = !selected;
           if(selected == true){
-            containerIndex = funcionarios[index].nome;
+            snackbarFuncionario = funcionarios[index].nome;
+            _snackBarStop();
+            ScaffoldMessenger.of(context).showSnackBar(snackBar!);
             conColorToBack = Colors.blue[colorCodes[index % colorCodes.length]];
             containerColor = Colors.grey.shade200;
-            iniciarParar.fecharTarefasAbertas();
+            timerTarefa.fecharTarefasAbertas();
+
             if(isStop == true){
               Navigator.of(context).pushReplacementNamed(RouteNames.rotaStartPage);
             }
@@ -155,7 +188,9 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     
     final routeSettings = ModalRoute.of(context)?.settings;
-    isStop= routeSettings?.arguments as bool; 
+    isStop = routeSettings?.arguments as bool; 
+    
+    _snackBarStop();
 
     return Scaffold(
       backgroundColor: Colors.lightBlue.shade100,

@@ -15,6 +15,33 @@ class _AddTarefaPageState extends State<AddTarefaPage> {
   DatabaseHelper db = DatabaseHelper();
   Tarefa tarefaSelecionada = Tarefa();
   String? hinttxt = "";
+  SnackBar? snackBar;
+
+  void _snackBarAdd(){
+    snackBar = SnackBar(
+      content: Text('Tarefa adicionada.'),
+      duration: const Duration(seconds: 3),
+      action: SnackBarAction(
+        label: 'Fechar',
+        onPressed: () {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        },
+      ),
+    );
+  }
+
+  void _snackBarEdit(){
+    snackBar = SnackBar(
+      content: Text('Tarefa editado.'),
+      duration: const Duration(seconds: 3),
+      action: SnackBarAction(
+        label: 'Fechar',
+        onPressed: () {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        },
+      ),
+    );
+  }
 
   Widget _bodyAddTarefaPage(){
     return   Row(
@@ -86,9 +113,13 @@ class _AddTarefaPageState extends State<AddTarefaPage> {
           onPressed: (){
             if(tarefaSelecionada.descricao != ''){
               if(hinttxt == "Editar Tarefa"){
+                _snackBarEdit();
+                ScaffoldMessenger.of(context).showSnackBar(snackBar!);
                 tarefaSelecionada.update();
               }
               else{
+                _snackBarAdd();
+                ScaffoldMessenger.of(context).showSnackBar(snackBar!);
                 tarefaSelecionada.insert(); 
               }
               Navigator.of(context).pushReplacementNamed(RouteNames.rotaListTarefaPage);

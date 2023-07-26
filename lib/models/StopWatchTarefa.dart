@@ -1,9 +1,9 @@
 import 'package:sqflite/sqflite.dart';
 import '../helpers/database_helper.dart';
 
-class TimeStampTarefaDoFuncionario{
+class StopWatchTarefa{
 
-  final String _tarefaTableNome = "TimeStampTarefaDoFuncionario";
+  final String _tarefaTableNome = "StopWatchTarefa";
   Future<Database>? database = DatabaseHelper().database;
 
   Future<int?>insert() async{
@@ -42,7 +42,7 @@ class TimeStampTarefaDoFuncionario{
     return map;
   }
 
-  TimeStampTarefaDoFuncionario.fromMap(Map<String,dynamic> map){
+  StopWatchTarefa.fromMap(Map<String,dynamic> map){
     start_timestamp = map['start_timestamp'];
     stop_timestamp = map['stop_timestamp'];
     id_funcionario = map['id_funcionario'];
@@ -57,7 +57,7 @@ class TimeStampTarefaDoFuncionario{
   late int? id_funcionario;
   late int? id_tarefa;
 
-  TimeStampTarefaDoFuncionario({DateTime? start_timestamp , DateTime? stop_timestamp , int? id_funcionario = null , int? id_tarefa = null}){
+  StopWatchTarefa({DateTime? start_timestamp , DateTime? stop_timestamp , int? id_funcionario = null , int? id_tarefa = null}){
     this.start_timestamp = start_timestamp;
     this.stop_timestamp = stop_timestamp;
     this.id_funcionario = id_funcionario;
