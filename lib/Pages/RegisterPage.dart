@@ -2,6 +2,7 @@ import 'package:banco/models/Funcionario.dart';
 import 'package:flutter/material.dart';
 
 import '../helpers/database_helper.dart';
+import '../models/Tarefa.dart';
 
 
 class RegisterPage extends StatefulWidget {
@@ -13,7 +14,11 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
 
+  bool selected = false;
 
+  Color? containerColor = Colors.blue;
+ 
+  List<Tarefa> tarefas = [];
   List<Funcionario> funcionarios = [];
   List<int> colorCodes = [200, 250];
   DatabaseHelper db = DatabaseHelper();
@@ -28,13 +33,53 @@ class _RegisterPageState extends State<RegisterPage> {
           funcionarios = lista;
         });
       });
+
+/*
+      db.getAllTarefas().then((lista) {
+        setState(() {
+          tarefas = lista;
+        });
+      });
+      */
     }
+
+
+  Widget _listaTarefas(int index){
+    return InkWell(
+            child:Container(
+              height: 100,
+              color: Colors.amber[colorCodes[index % colorCodes.length]],
+              child: Center(
+                child: Text(
+                  tarefas[index].tarefa,
+                  style: const TextStyle(fontSize: 50),
+                ),
+              ),
+            ),
+            onTap: () {
+              setState(() {
+                selected = true;
+              }
+            );
+          },
+        );
+  }
+
+  Widget _BodyTarefasPage(){
+    return ListView.builder(
+        padding: const EdgeInsets.all(15),
+        itemCount: tarefas.length,
+        itemBuilder: (context, index){
+          return _listaTarefas(index);
+      },
+    );
+  }
 
   Widget _listaFuncionarios(int index){
     return InkWell(
             child:Container(
               height: 100,
-              color: Colors.blue[colorCodes[index % colorCodes.length]],
+              color: containerColor[colorCodes[index % colorCodes.length]],
               child: Center(
                 child: Text(
                   funcionarios[index].nome,
@@ -44,7 +89,11 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             onTap: () {
               setState(() {
-                Navigator.of(context).pushReplacementNamed ('/TasksPage');
+                selected = !selected;
+                if(selected == true){
+                  containerColor = Colors.amber;
+
+                }
               }
             );
           },
@@ -61,9 +110,6 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-
-  
-
   @override
   Widget build(BuildContext context) {
     
@@ -75,8 +121,6 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     return Scaffold(
-      
-
       backgroundColor: Colors.lightBlue.shade100,
       appBar: AppBar(
         centerTitle: true,
@@ -88,8 +132,17 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         backgroundColor: Colors.blue,
       ),
-      body: _BodyRegisterPage(),
-
+      body: Row(
+        children: [
+          Expanded(
+            child: _BodyRegisterPage(),
+          ),
+          if (selected == true)
+            Expanded(
+            child:_BodyRegisterPage(),
+            ),
+        ],
+      ),
     );
   }
 }

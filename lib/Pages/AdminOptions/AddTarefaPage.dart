@@ -1,4 +1,4 @@
-import 'package:banco/models/Categoria.dart';
+import 'package:banco/models/Tarefa.dart';
 import 'package:flutter/material.dart';
 
 import '../../helpers/database_helper.dart';
@@ -10,62 +10,95 @@ class AddTarefaPage extends StatefulWidget {
   State<AddTarefaPage> createState() => _AddTarefaPageState();
 }
 
-class _AddTarefaPageState extends State<AddTarefaPage> {
-  DatabaseHelper db = DatabaseHelper();
-
-  Future<DropdownButton<Categoria>> _bodyAddTarefaPage() async {
-    var listaCategorias = await db.getAllCategorias();
-
-    return DropdownButton<Categoria>(
-      value: listaCategorias.first,
-      icon: const Icon(Icons.arrow_downward),
-      elevation: 16,
-      style: const TextStyle(color: Colors.deepPurple),
-      underline: Container(
-        height: 2,
-        color: Colors.deepPurpleAccent,
-      ),
-      onChanged: (Categoria? value) {
-        // This is called when the user selects an item.
-        setState(() {
-          listaCategorias.first = value!;
-        });
-      },
-      items: listaCategorias.map<DropdownMenuItem<Categoria>>((Categoria value) {
-        return DropdownMenuItem<Categoria>(
-          value: value,
-          child: Text(value.descricao),
-        );
-      }).toList(),
-    ); 
+  Widget _bodyAddPage(){
+    return   Row(
+      children: <Widget>[
+        Expanded(
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child:Padding(
+                  padding: const EdgeInsets.all(100.0),
+                  child: TextField(
+                    controller: nomeControler,
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      hintText: hinttxt,
+                    ),
+                    onChanged: (text){
+                      tarefaSelecionada.tarefa = text;
+                    },
+                  ),
+                ),
+              )
+            ],
+          )
+        )
+      ],
+    );
   }
 
+  TextEditingController? nomeControler = TextEditingController();
+  DatabaseHelper db = DatabaseHelper();
+  Tarefa tarefaSelecionada = Tarefa();
+  String? hinttxt = "";
+
+class _AddTarefaPageState extends State<AddTarefaPage> {
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title:  Text("Adicionar Tarefa")
+
+    final routeSettings = ModalRoute.of(context)?.settings;
+    if (routeSettings?.arguments == null){
+        tarefaSelecionada = Tarefa();
+        hinttxt = "Adicionar";
+    }
+    else {
+      tarefaSelecionada = routeSettings?.arguments as Tarefa;
+      hinttxt = "Editar";
+    }
+
+    nomeControler!.text = tarefaSelecionada.tarefa;
+
+    return Scaffold(
+      appBar: AppBar(
+        leading: Builder(builder: (BuildContext context){
+          return BackButton(
+            onPressed: (){
+              Navigator.of(context).pushReplacementNamed('/AdminOptionsPage');
+            },
+          );
+        }),
+        
+        centerTitle: true,
+        title: Text(nomeControler!.text == "" ? 'Adicionar' : nomeControler!.text,
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 50.0,
+          ),
         ),
-        body: FutureBuilder<DropdownButton<Categoria>>(
-              future: _bodyAddTarefaPage(),
-              builder: (context, snapshot) 
-              {
-                if (snapshot.connectionState == ConnectionState.done)
-                {
-                  return snapshot.data!;
-                }else{
-                  return Scaffold();
-                }
-              },
-            ),
-        floatingActionButton:
+        backgroundColor: Colors.blue,
+      ),
+      body: _bodyAddPage(),
+      floatingActionButton:
         FloatingActionButton(
-          child: const Icon(Icons.add),
+          child: const Icon(Icons.save),
           onPressed: (){
-            Navigator.of(context).pushReplacementNamed ('/AddFuncionariosPage', arguments:null );
+            
+
+            if(tarefaSelecionada.tarefa != ''){
+              if(hinttxt == "Editar"){
+                tarefaSelecionada.update();
+              }
+              else{
+                tarefaSelecionada.insert(); 
+              }
+              Navigator.of(context).pushReplacementNamed("/AdminOptionsPage");
+            }
+            else{
+               //retornar um aviso que nao é possivel inserir uma Tarefa vazio
+            }
           }
-        ),
+      ),
     );
   }
 }
