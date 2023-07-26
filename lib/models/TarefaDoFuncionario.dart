@@ -14,17 +14,11 @@ class TarefaDoFuncionario{
   
     return resultado;
   }
-  Future<int>update() async{
-    var db = await database!;
-    var resultado = await db.update(_tarefaTableNome,this.toMap(),
-      where: "Id = ?",
-      whereArgs: [this.id_funcionario,this.id_tarefa]);
-    return resultado;
-  }
+
   Future<int>delete() async{
     var db = await database!;
     var resultado = await db.delete(_tarefaTableNome,
-      where: "Id = ?",
+      where: "id_funcionario = ? and id_tarefa = ?",
       whereArgs: [this.id_funcionario,this.id_tarefa]);
     return resultado;
   }
@@ -37,8 +31,8 @@ class TarefaDoFuncionario{
     return map;
   }
   TarefaDoFuncionario.fromMap(Map<String,dynamic> map){
-    id_funcionario = map['Id_Funcionario'];
-    id_tarefa = map['Id_Tarefa'];
+    id_funcionario = map['id_funcionario'];
+    id_tarefa = map['id_tarefa'];
 
   }
 

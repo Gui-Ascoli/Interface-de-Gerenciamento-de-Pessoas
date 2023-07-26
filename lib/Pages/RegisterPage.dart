@@ -1,3 +1,4 @@
+import 'package:banco/Pages/CustomAppBar.dart';
 import 'package:banco/models/Funcionario.dart';
 import 'package:flutter/material.dart';
 
@@ -125,23 +126,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     return Scaffold(
       backgroundColor: Colors.lightBlue.shade100,
-      appBar: AppBar(
-        leading: Builder(builder: (BuildContext context){
-          return BackButton(
-            onPressed: (){
-              Navigator.of(context).pushReplacementNamed(RouteNames.rotaStartPage);
-            },
-          );
-        }),
-        centerTitle: true,
-        title: const Text('Axtor',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 50.0,
-          ),
-        ),
-        backgroundColor: Colors.blue,
-      ),
+      appBar: CustomAppBar.createAppBar(context: context, backRoute:RouteNames.rotaStartPage),
       body: Row(
         children: [
           Expanded(
