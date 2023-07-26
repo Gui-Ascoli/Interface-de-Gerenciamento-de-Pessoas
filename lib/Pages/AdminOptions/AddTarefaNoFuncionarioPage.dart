@@ -1,23 +1,22 @@
-import 'package:banco/models/Funcionario.dart';
+import 'package:banco/models/TarefaDoFuncionario.dart';
 import 'package:flutter/material.dart';
 
-import '../helpers/database_helper.dart';
-import '../models/Tarefa.dart';
+import '../../helpers/database_helper.dart';
+import '../../models/Funcionario.dart';
+import '../../models/Tarefa.dart';
 
-
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+class AddTarefaNoFuncionarioPage extends StatefulWidget {
+  const AddTarefaNoFuncionarioPage({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<AddTarefaNoFuncionarioPage> createState() => _AddTarefaNoFuncionarioPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
-
+class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage> {
+ 
   bool selected = false;
   
-
- 
+  TarefaDoFuncionario tarefaFuncionario = TarefaDoFuncionario();
   List<Tarefa> tarefas = [];
   List<Funcionario> funcionarios = [];
   List<int> colorCodes = [200, 250];
@@ -50,20 +49,43 @@ class _RegisterPageState extends State<RegisterPage> {
     return InkWell(
             child:Container(
               height: 100,
-              color: containerColor = Colors.amber[colorCodes[index % colorCodes.length]],
-              child: Center(
-                child: Text(
-                  tarefas[index].tarefa,
-                  style: const TextStyle(fontSize: 50),
-                ),
+              color: Colors.green[colorCodes[index % colorCodes.length]],
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      tarefas[index].tarefa,
+                      style: const TextStyle(fontSize: 50),
+                    ),
+                  ),
+ 
+                  
+                  Container(
+                    width: 10,
+                  ),
+                  Switch( 
+                    value: false,
+                    onChanged: (value){
+                      setState(() {
+                        value = !value;
+                        if(value == true){
+                          tarefaFuncionario.id_tarefa = tarefas[index].id;
+                          tarefaFuncionario.insert();
+                        }else{
+                          tarefaFuncionario.delete();
+                        }
+                        
+                      });
+                    },
+                  ),
+                  Container(
+                    width: 10,
+                  ),
+                ]
               ),
             ),
-            onTap: () {
-              setState(() {
-                selected = true;
-              }
-            );
-          },
+ 
+            
         );
   }
 
@@ -80,7 +102,6 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget _listaFuncionarios(int index){
     return InkWell(
             child:Container(
-              
               height: 100,
               color:(containerIndex == funcionarios[index].nome) ? containerColor : Colors.blue[colorCodes[index % colorCodes.length]] ,
               child: Center(
@@ -96,6 +117,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 if(selected == true){
                   containerIndex = funcionarios[index].nome;
                   containerColor = Colors.grey.shade200;
+                  tarefaFuncionario.id_funcionario = funcionarios[index].id;
 
                 }else{
                   containerColor = Colors.blue[colorCodes[index % colorCodes.length]];
@@ -118,14 +140,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    
-    final routeSettings = ModalRoute.of(context)?.settings;
-    final startStop = routeSettings?.arguments as bool; //recebe o valor da variavel "finalizar" que vem da tela "startPage"(carrega a escolha de iniciar ou finalizar uma tarefa)
-
-    if(startStop == true){
-    }else{
-    }
-
     return Scaffold(
       backgroundColor: Colors.lightBlue.shade100,
       appBar: AppBar(

@@ -12,7 +12,7 @@ class AddFuncionariosPage extends StatefulWidget {
   State<AddFuncionariosPage> createState() => _AddFuncionariosPageState();
 }
 
-  Widget _bodyAddPage(){
+  Widget _bodyAddFuncionarioPage(){
     return   Row(
       children: <Widget>[
         Expanded(
@@ -39,7 +39,7 @@ class AddFuncionariosPage extends StatefulWidget {
       ],
     );
   }
-
+  
   TextEditingController? nomeControler = TextEditingController();
   DatabaseHelper db = DatabaseHelper();
   Funcionario funcionarioSelecionado = Funcionario();
@@ -80,7 +80,7 @@ class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
         ),
         backgroundColor: Colors.blue,
       ),
-      body: _bodyAddPage(),
+      body: _bodyAddFuncionarioPage(),
       floatingActionButton:
         FloatingActionButton(
           child: const Icon(Icons.save),
@@ -94,7 +94,7 @@ class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
               else{
                 funcionarioSelecionado.insert(); 
               }
-              Navigator.of(context).pushReplacementNamed("/AdminOptionsPage");
+              Navigator.of(context).pushReplacementNamed("/AddTarefaPage");
             }
             else{
                //retornar um aviso que nao é possivel inserir um nome vazio
