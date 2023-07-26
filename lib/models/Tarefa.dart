@@ -41,6 +41,13 @@ class Tarefa{
     descricao = map['Descricao'];
   }
 
+  late String CreateScript = '''CREATE TABLE IF NOT EXISTS Tarefa (
+                                  Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                  Descricao TEXT
+                                )''';
+                                
+  late String DropScript = 'DROP TABLE IF EXISTS Tarefa ';
+
    //Fim
 
   late int? id;

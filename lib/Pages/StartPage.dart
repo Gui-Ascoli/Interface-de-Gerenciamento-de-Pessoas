@@ -16,7 +16,6 @@ class _StartPageState extends State<StartPage> {
  
 
   Widget _bodyStartPage(){
-    
     return Row(
       children:<Widget>[
         Expanded(
@@ -104,7 +103,7 @@ class _StartPageState extends State<StartPage> {
             child: FloatingActionButton(
               heroTag: "btn1",
               onPressed: () {
-                Navigator.of(context).pushReplacementNamed(RouteNames.rotaAddFuncionariosPage);
+                Navigator.of(context).pushReplacementNamed(RouteNames.rotaListFuncionarioPage);
               },
               child: const Icon(Icons.add),
             ),

@@ -49,6 +49,17 @@ class StopWatchTarefa{
     id_tarefa = map['id_tarefa'];
   }
 
+
+  late String CreateScript = '''CREATE TABLE IF NOT EXISTS StopWatchTarefa (
+                                  Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                  start_timestamp DATETIME,
+                                  stop_timestamp DATETIME,
+                                  id_funcionario INTEGER,
+                                  id_tarefa INTEGER
+                                )''';
+                                
+  late String DropScript = 'DROP TABLE IF EXISTS StopWatchTarefa';
+
    //Fim
 
   late int id;

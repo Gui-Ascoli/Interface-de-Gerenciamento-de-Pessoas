@@ -40,19 +40,19 @@ class DatabaseHelper {
     var db = await database;
     db.transaction((txn) async {
       await txn.execute(Funcionario().CreateScript);
-      await txn.execute('CREATE TABLE IF NOT EXISTS StopWatchTarefa (id INTEGER PRIMARY KEY AUTOINCREMENT,start_timestamp DATETIME, stop_timestamp DATETIME, id_funcionario INTEGER , id_tarefas INTEGER)');
-      await txn.execute('CREATE TABLE IF NOT EXISTS Tarefa (Id INTEGER PRIMARY KEY AUTOINCREMENT,Descricao TEXT)');
-      await txn.execute('CREATE TABLE IF NOT EXISTS TarefaDoFuncionario (id_funcionario INTEGER, id_tarefa INTEGER)');
+      await txn.execute(StopWatchTarefa().CreateScript);
+      await txn.execute(Tarefa().CreateScript);
+      await txn.execute(TarefaDoFuncionario().CreateScript);
     });
   }
   
    FutureOr<void> dropDB()async{
     var db = await database;
     await db.transaction((txn) async{
-      await txn.execute('DROP TABLE IF EXISTS Funcionario');
-      await  txn.execute('DROP TABLE IF EXISTS StopWatchTarefa');
-      await  txn.execute('DROP TABLE IF EXISTS Tarefa');
-      await  txn.execute('DROP TABLE IF EXISTS TarefaDoFuncionario');
+      await txn.execute(Funcionario().DropScript);
+      await  txn.execute(StopWatchTarefa().DropScript);
+      await  txn.execute(Tarefa().DropScript);
+      await  txn.execute(TarefaDoFuncionario().DropScript);
     }
     );
   }

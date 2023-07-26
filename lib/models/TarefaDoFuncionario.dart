@@ -33,6 +33,13 @@ class TarefaDoFuncionario{
     id_tarefa = map['id_tarefa'];
   }
 
+  late String CreateScript = '''CREATE TABLE IF NOT EXISTS TarefaDoFuncionario (
+                                  id_funcionario INTEGER,
+                                  id_tarefa INTEGER
+                                )''';
+                                
+  late String DropScript = 'DROP TABLE IF EXISTS TarefaDoFuncionario ';
+
    //Fim
 
   late int? id_funcionario;
