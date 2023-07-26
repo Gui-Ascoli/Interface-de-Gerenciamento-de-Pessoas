@@ -16,6 +16,9 @@ import '../models/TarefaDoFuncionario.dart';
 class DatabaseHelper {
   DatabaseHelper._();
 
+  FutureOr<void> initConection() async{
+    this.database;
+}
   //static Database? _database;
   static final DatabaseHelper _instance = DatabaseHelper._();
   factory DatabaseHelper() {
@@ -33,26 +36,35 @@ class DatabaseHelper {
     return _database!;
   }
 
-  FutureOr<void> onCreate(Database db, int version){
+  Future<FutureOr<void>> CreateTable() async {
+    var db = await database;
     db.transaction((txn) async {
-      txn.execute('CREATE TABLE Funcionario (Id INTEGER PRIMARY KEY AUTOINCREMENT,Nome TEXT, Apto INTEGER)');
-      //txn.execute('CREATE TABLE StopWatchTarefa (id INTEGER PRIMARY KEY AUTOINCREMENT,start_timestamp DATETIME, stop_timestamp DATETIME, id_funcionario INTEGER , id_tarefas INTEGER)');
-      //txn.execute('CREATE TABLE Tarefa (Id INTEGER PRIMARY KEY AUTOINCREMENT,Descricao TEXT)');
-      //txn.execute('CREATE TABLE TarefaDoFuncionario (id_funcionario INTEGER, id_tarefa INTEGER)');
+      await txn.execute(Funcionario().CreateScript);
+      await txn.execute('CREATE TABLE IF NOT EXISTS StopWatchTarefa (id INTEGER PRIMARY KEY AUTOINCREMENT,start_timestamp DATETIME, stop_timestamp DATETIME, id_funcionario INTEGER , id_tarefas INTEGER)');
+      await txn.execute('CREATE TABLE IF NOT EXISTS Tarefa (Id INTEGER PRIMARY KEY AUTOINCREMENT,Descricao TEXT)');
+      await txn.execute('CREATE TABLE IF NOT EXISTS TarefaDoFuncionario (id_funcionario INTEGER, id_tarefa INTEGER)');
     });
   }
   
-
+   FutureOr<void> dropDB()async{
+    var db = await database;
+    await db.transaction((txn) async{
+      await txn.execute('DROP TABLE IF EXISTS Funcionario');
+      await  txn.execute('DROP TABLE IF EXISTS StopWatchTarefa');
+      await  txn.execute('DROP TABLE IF EXISTS Tarefa');
+      await  txn.execute('DROP TABLE IF EXISTS TarefaDoFuncionario');
+    }
+    );
+  }
   Future<Database?> initialize() async {
     //final dbPath = await getApplicationDocumentsDirectory(); windows
     Directory? dbPath = await getExternalStorageDirectory(); //android
     if(dbPath != null){
       final path = join(dbPath.path, 'my_database.db');
-      final dbi =  await databaseFactoryFfi.openDatabase(path, options: OpenDatabaseOptions(
-          onCreate: onCreate,
-          version: 1,
-        )
-      );
+      final dbi =  await databaseFactoryFfi.openDatabase(path, 
+        
+        );
+      
       return dbi;
     }else{
       return null;
