@@ -54,7 +54,7 @@ class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage>
                 children: <Widget>[
                   Expanded(
                     child: Text(
-                      tarefas[index].tarefa,
+                      tarefas[index].descricao,
                       style: const TextStyle(fontSize: 50),
                     ),
                   ),
@@ -89,7 +89,7 @@ class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage>
         );
   }
 
-  Widget _BodyTarefasPage(){
+  Widget _bodyTarefasPage(){
     return ListView.builder(
         padding: const EdgeInsets.all(15),
         itemCount: tarefas.length,
@@ -128,7 +128,7 @@ class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage>
         );
   }
 
-  Widget _BodyRegisterPage(){
+  Widget _bodyRegisterPage(){
     return ListView.builder(
           padding: const EdgeInsets.all(15),
           itemCount: funcionarios.length,
@@ -155,11 +155,11 @@ class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage>
       body: Row(
         children: [
           Expanded(
-            child: _BodyRegisterPage(),
+            child: _bodyRegisterPage(),
           ),
           if (selected == true)
             Expanded(
-            child:_BodyRegisterPage(),
+            child:_bodyRegisterPage(),
             ),
         ],
       ),

@@ -32,8 +32,8 @@ class TarefaDoFuncionario{
   Map<String,dynamic> toMap(){
     var map = <String,dynamic>{
       'id' :id,
-      'id_funcionarios' : id_funcionario,
-      'id_tarefas' :id_tarefa,
+      'id_funcionario' : id_funcionario,
+      'id_tarefa' :id_tarefa,
     };
     return map;
   }

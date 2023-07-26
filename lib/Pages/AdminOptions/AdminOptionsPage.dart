@@ -1,5 +1,6 @@
 import 'package:banco/helpers/database_helper.dart';
 import 'package:flutter/material.dart';
+import '../../helpers/RouteNames.dart';
 import '../../models/Funcionario.dart';
 
 class AdminOptionsPage extends StatefulWidget {
@@ -45,7 +46,7 @@ class _AdminOptionsPageState extends State<AdminOptionsPage> {
                   IconButton(
                     onPressed: (){
                       if(funcionarios[index].apto == true){
-                        Navigator.of(context).pushReplacementNamed ('/AddFuncionariosPage', arguments:funcionarios[index] );
+                        Navigator.of(context).pushReplacementNamed (RouteNames.rotaAddFuncionariosPage, arguments:funcionarios[index] );
                       }
                     },
                     tooltip: "Editar funcionario",
@@ -91,7 +92,7 @@ Widget _bodyNewRootPage(){
         leading: Builder(builder: (BuildContext context){
           return BackButton(
             onPressed: (){
-              Navigator.of(context).pushReplacementNamed('/StartPage');
+              Navigator.of(context).pushReplacementNamed(RouteNames.rotaStartPage );
             },
           );
         }),
@@ -109,7 +110,7 @@ Widget _bodyNewRootPage(){
         FloatingActionButton(
           child: const Icon(Icons.add),
           onPressed: (){
-            Navigator.of(context).pushReplacementNamed ('/AddFuncionariosPage', arguments:null );
+            Navigator.of(context).pushReplacementNamed (RouteNames.rotaAddFuncionariosPage, arguments:null );
           }
           
       ),

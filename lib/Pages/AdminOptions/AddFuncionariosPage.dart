@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:banco/models/Funcionario.dart';
 
+import '../../helpers/RouteNames.dart';
 import '../../helpers/database_helper.dart';
 
 
@@ -66,7 +67,7 @@ class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
         leading: Builder(builder: (BuildContext context){
           return BackButton(
             onPressed: (){
-              Navigator.of(context).pushReplacementNamed('/AdminOptionsPage');
+              Navigator.of(context).pushReplacementNamed(RouteNames.rotaAdminOptionsPage);
             },
           );
         }),
@@ -94,7 +95,7 @@ class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
               else{
                 funcionarioSelecionado.insert(); 
               }
-              Navigator.of(context).pushReplacementNamed("/AddTarefaPage");
+              Navigator.of(context).pushReplacementNamed(RouteNames.rotaAdminOptionsPage);
             }
             else{
                //retornar um aviso que nao é possivel inserir um nome vazio
