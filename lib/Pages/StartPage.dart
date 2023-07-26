@@ -134,7 +134,7 @@ class _StartPageState extends State<StartPage> {
             child: FloatingActionButton(
               heroTag: "btn1",
               onPressed: () {
-                Navigator.of(context).pushReplacementNamed(RouteNames.rotaAdminOptionsPage);
+                Navigator.of(context).pushReplacementNamed(RouteNames.rotaListFuncionarioPage);
               },
               child: const Icon(Icons.add),
             ),
@@ -145,9 +145,21 @@ class _StartPageState extends State<StartPage> {
             child: FloatingActionButton(
               heroTag: "btn2",
               onPressed: () {
-                Navigator.of(context).pushReplacementNamed(RouteNames.rotaAddTarefaPage);
+                Navigator.of(context).pushReplacementNamed(RouteNames.rotaListTarefaPage);
+                
               },
               child: const Icon(Icons.inbox_sharp),
+            ),
+          ),
+          Positioned(
+            right: 16.0,
+            bottom: 160.0,
+            child: FloatingActionButton(
+              heroTag: "btn3",
+              onPressed: () {
+                Navigator.of(context).pushReplacementNamed(RouteNames.rotaAddTarefaNoFuncionarioPage);
+              },
+              child: const Icon(Icons.access_alarms),
             ),
           ),
         ],

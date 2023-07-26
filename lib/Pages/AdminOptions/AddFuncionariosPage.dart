@@ -53,11 +53,11 @@ class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
     final routeSettings = ModalRoute.of(context)?.settings;
     if (routeSettings?.arguments == null){
         funcionarioSelecionado = Funcionario();
-        hinttxt = "Adicionar";
+        hinttxt = "Adicionar Funcionario";
     }
     else {
       funcionarioSelecionado = routeSettings?.arguments as Funcionario;
-      hinttxt = "Editar";
+      hinttxt = "Editar Funcionario";
     }
 
     nomeControler!.text = funcionarioSelecionado.nome;
@@ -67,13 +67,13 @@ class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
         leading: Builder(builder: (BuildContext context){
           return BackButton(
             onPressed: (){
-              Navigator.of(context).pushReplacementNamed(RouteNames.rotaAdminOptionsPage);
+              Navigator.of(context).pushReplacementNamed(RouteNames.rotaListFuncionarioPage);
             },
           );
         }),
         
         centerTitle: true,
-        title: Text(nomeControler!.text == "" ? 'Adicionar' : nomeControler!.text,
+        title: Text(nomeControler!.text == "" ? 'Adicionar Funcionario' : nomeControler!.text,
           style: const TextStyle(
             color: Colors.black,
             fontSize: 50.0,
@@ -89,13 +89,13 @@ class _AddFuncionariosPageState extends State<AddFuncionariosPage> {
             
 
             if(funcionarioSelecionado.nome != ''){
-              if(hinttxt == "Editar"){
+              if(hinttxt == "Editar Funcionario"){
                 funcionarioSelecionado.update();
               }
               else{
                 funcionarioSelecionado.insert(); 
               }
-              Navigator.of(context).pushReplacementNamed(RouteNames.rotaAdminOptionsPage);
+              Navigator.of(context).pushReplacementNamed(RouteNames.rotaListFuncionarioPage);
             }
             else{
                //retornar um aviso que nao é possivel inserir um nome vazio

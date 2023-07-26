@@ -52,11 +52,11 @@ class _AddTarefaPageState extends State<AddTarefaPage> {
     final routeSettings = ModalRoute.of(context)?.settings;
     if (routeSettings?.arguments == null){
         tarefaSelecionada = Tarefa();
-        hinttxt = "Adicionar";
+        hinttxt = "Adicionar Tarefa";
     }
     else {
       tarefaSelecionada = routeSettings?.arguments as Tarefa;
-      hinttxt = "Editar";
+      hinttxt = "Editar Tarefa";
     }
 
     nomeControler!.text = tarefaSelecionada.descricao;
@@ -72,7 +72,7 @@ class _AddTarefaPageState extends State<AddTarefaPage> {
         }),
         
         centerTitle: true,
-        title: Text(nomeControler!.text == "" ? 'Adicionar' : nomeControler!.text,
+        title: Text(nomeControler!.text == "" ? 'Adicionar Tarefa' : nomeControler!.text,
           style: const TextStyle(
             color: Colors.black,
             fontSize: 50.0,
@@ -88,13 +88,13 @@ class _AddTarefaPageState extends State<AddTarefaPage> {
             
 
             if(tarefaSelecionada.descricao != ''){
-              if(hinttxt == "Editar"){
+              if(hinttxt == "Editar Tarefa"){
                 tarefaSelecionada.update();
               }
               else{
                 tarefaSelecionada.insert(); 
               }
-              Navigator.of(context).pushReplacementNamed(RouteNames.rotaAdminOptionsPage);
+              Navigator.of(context).pushReplacementNamed(RouteNames.rotaListTarefaPage);
             }
             else{
                //retornar um aviso que nao é possivel inserir uma Tarefa vazio
