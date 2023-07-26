@@ -41,7 +41,7 @@ class Funcionario{
   Funcionario.fromMap(Map<String,dynamic> map){
     id = map['Id'];
     nome = map['Nome'];
-    _apto = map['APTO'];
+    _apto = map['Apto'];
   }
 
    //Fim
