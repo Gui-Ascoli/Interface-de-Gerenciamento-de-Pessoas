@@ -33,24 +33,24 @@ class Tarefa{
   Map<String,dynamic> toMap(){
     var map = <String,dynamic>{
       'id' :id,
-      'tarefas' :tarefa,
+      'descricao' :descricao,
     };
     return map;
   }
   Tarefa.fromMap(Map<String,dynamic> map){
     id = map['Id'];
-    tarefa = map['Tarefa'];
+    descricao = map['Descricao'];
 
   }
 
    //Fim
 
   late int? id;
-  late String tarefa;
+  late String descricao;
 
-  Tarefa({int? id = null,String tarefa = ''}){
-    this.id;
-    this.tarefa;
+  Tarefa({int? id = null,String descricao = ''}){
+    this.id = id;
+    this.descricao = descricao;
   }
 
 }

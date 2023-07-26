@@ -1,6 +1,7 @@
 import 'package:banco/models/Tarefa.dart';
 import 'package:flutter/material.dart';
 
+import '../../helpers/RouteNames.dart';
 import '../../helpers/database_helper.dart';
 
 class AddTarefaPage extends StatefulWidget {
@@ -10,7 +11,7 @@ class AddTarefaPage extends StatefulWidget {
   State<AddTarefaPage> createState() => _AddTarefaPageState();
 }
 
-  Widget _bodyAddPage(){
+  Widget _bodyAddTarefaPage(){
     return   Row(
       children: <Widget>[
         Expanded(
@@ -26,7 +27,7 @@ class AddTarefaPage extends StatefulWidget {
                       hintText: hinttxt,
                     ),
                     onChanged: (text){
-                      tarefaSelecionada.tarefa = text;
+                      tarefaSelecionada.descricao = text;
                     },
                   ),
                 ),
@@ -58,14 +59,14 @@ class _AddTarefaPageState extends State<AddTarefaPage> {
       hinttxt = "Editar";
     }
 
-    nomeControler!.text = tarefaSelecionada.tarefa;
+    nomeControler!.text = tarefaSelecionada.descricao;
 
     return Scaffold(
       appBar: AppBar(
         leading: Builder(builder: (BuildContext context){
           return BackButton(
             onPressed: (){
-              Navigator.of(context).pushReplacementNamed('/AdminOptionsPage');
+              Navigator.of(context).pushReplacementNamed(RouteNames.rotaStartPage);
             },
           );
         }),
@@ -79,21 +80,21 @@ class _AddTarefaPageState extends State<AddTarefaPage> {
         ),
         backgroundColor: Colors.blue,
       ),
-      body: _bodyAddPage(),
+      body: _bodyAddTarefaPage(),
       floatingActionButton:
         FloatingActionButton(
           child: const Icon(Icons.save),
           onPressed: (){
             
 
-            if(tarefaSelecionada.tarefa != ''){
+            if(tarefaSelecionada.descricao != ''){
               if(hinttxt == "Editar"){
                 tarefaSelecionada.update();
               }
               else{
                 tarefaSelecionada.insert(); 
               }
-              Navigator.of(context).pushReplacementNamed("/AdminOptionsPage");
+              Navigator.of(context).pushReplacementNamed(RouteNames.rotaAdminOptionsPage);
             }
             else{
                //retornar um aviso que nao é possivel inserir uma Tarefa vazio

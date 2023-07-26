@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../helpers/RouteNames.dart';
 import '../helpers/database_helper.dart';
 
 
@@ -25,7 +26,7 @@ class _StartPageState extends State<StartPage> {
       //db.initialize();
     }
 
-  Widget _BodyStartPage(){
+  Widget _bodyStartPage(){
     return Row(
         children:<Widget>[
           Expanded(
@@ -48,7 +49,7 @@ class _StartPageState extends State<StartPage> {
                         //Como colorir esse botao?
                         onPressed:(){
                           finalizar = true;
-                          Navigator.of(context).pushReplacementNamed ('/RegisterPage',arguments: finalizar);
+                          Navigator.of(context).pushReplacementNamed (RouteNames.rotaRegisterPage,arguments: finalizar);
                         },
                                       
                         child:Image.asset('assets/images/stop4.png')
@@ -81,7 +82,7 @@ class _StartPageState extends State<StartPage> {
                         //Como colorir esse botao?
                         onPressed:(){
                           finalizar = false;
-                          Navigator.of(context).pushReplacementNamed ('/RegisterPage',arguments: finalizar);
+                          Navigator.of(context).pushReplacementNamed (RouteNames.rotaRegisterPage,arguments: finalizar);
                         },
                                       
                         child:Image.asset('assets/images/start1.png')
@@ -123,7 +124,7 @@ class _StartPageState extends State<StartPage> {
         ),
         backgroundColor: Colors.blue,
       ),
-      body: _BodyStartPage(),
+      body: _bodyStartPage(),
 
       floatingActionButton:Stack(
         children: [
@@ -131,20 +132,22 @@ class _StartPageState extends State<StartPage> {
             right: 16.0,
             bottom: 20.0,
             child: FloatingActionButton(
+              heroTag: "btn1",
               onPressed: () {
-                Navigator.of(context).pushReplacementNamed('/TasksPage');
+                Navigator.of(context).pushReplacementNamed(RouteNames.rotaAdminOptionsPage);
               },
-              child: Icon(Icons.add),
+              child: const Icon(Icons.add),
             ),
           ),
           Positioned(
             right: 16.0,
             bottom: 90.0,
             child: FloatingActionButton(
+              heroTag: "btn2",
               onPressed: () {
-                Navigator.of(context).pushReplacementNamed('/AddTarefaNoFuncionario');
+                Navigator.of(context).pushReplacementNamed(RouteNames.rotaAddTarefaPage);
               },
-              child: Icon(Icons.inbox_sharp),
+              child: const Icon(Icons.inbox_sharp),
             ),
           ),
         ],

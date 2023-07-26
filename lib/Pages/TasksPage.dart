@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../helpers/RouteNames.dart';
+
 class TasksPage extends StatefulWidget {
   const TasksPage({super.key});
 
@@ -10,7 +12,7 @@ class TasksPage extends StatefulWidget {
   List<String> itens = ['A','B',' C'];
   List<int> colorCodes = [600, 500, 100];
 
-  Widget _BodyTaskPage(){
+  Widget _bodyTaskPage(){
     return ListView.builder(
         padding: const EdgeInsets.all(15),
         itemCount: itens.length,
@@ -25,7 +27,7 @@ class TasksPage extends StatefulWidget {
                   style:const TextStyle(fontSize: 50),
                 ),
                 onTap: () {
-                  Navigator.of(context).pushReplacementNamed ('/StartPage');
+                  Navigator.of(context).pushReplacementNamed (RouteNames.rotaStartPage);
 
                 },
               ),
@@ -50,12 +52,12 @@ class _TasksPageState extends State<TasksPage> {
         ),
         backgroundColor: Colors.blue,
       ),
-      body: _BodyTaskPage(),
+      body: _bodyTaskPage(),
       floatingActionButton:
         FloatingActionButton(
           child: const Icon(Icons.add),
           onPressed: (){
-            Navigator.of(context).pushReplacementNamed("/AddTarefaPage");
+            Navigator.of(context).pushReplacementNamed(RouteNames.rotaAddTarefaPage);
           }
           
       ),
