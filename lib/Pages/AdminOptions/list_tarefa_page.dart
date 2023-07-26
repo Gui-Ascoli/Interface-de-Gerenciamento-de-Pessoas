@@ -2,8 +2,11 @@
 import 'package:banco/helpers/database_helper.dart';
 import 'package:banco/models/tarefa.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:screenshot/screenshot.dart';
 import '../../helpers/route_names.dart';
 import '../../models/funcionario.dart';
+import '../../models/screenshot.dart';
 
 class ListTarefaPage extends StatefulWidget {
   const ListTarefaPage({super.key});
@@ -14,6 +17,8 @@ class ListTarefaPage extends StatefulWidget {
 
 class _ListTarefaPageState extends State<ListTarefaPage> {
 
+  final ScreenshotController _screenshotController = ScreenshotController(); 
+  final ScreenshotOps _screenshot = ScreenshotOps();
   SnackBar? snackBar;
   Drawer? howDrawer ;
   TextEditingController? textFieldControler = TextEditingController();
@@ -30,11 +35,6 @@ class _ListTarefaPageState extends State<ListTarefaPage> {
     const Tab(text: 'Funcionarios'),
     const Tab(text: 'Tarefas'),
   ];
-/*
-  void _ofScreen(){
-    Navigator.of(context).pushReplacementNamed(RouteNames.rotaListFuncionarioPage);
-  }
-*/
 
   void _snackBarErroVazio(){
     snackBar = SnackBar(
@@ -145,8 +145,6 @@ class _ListTarefaPageState extends State<ListTarefaPage> {
               spreadRadius: 3, 
               blurRadius: 15, 
               offset: const Offset(0, 6), // changes position of shadow
-              //first paramerter of offset is left-right
-              //second parameter is top to down
             ),
           ],
         ),
@@ -318,7 +316,7 @@ class _ListTarefaPageState extends State<ListTarefaPage> {
                 TextField(
                   controller: textFieldControler,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border:const OutlineInputBorder(),
                     hintText: hinttxt,
                   ),
                   onChanged: (text){
@@ -387,70 +385,116 @@ class _ListTarefaPageState extends State<ListTarefaPage> {
     return howDrawer;
   }
 
-  //var scaffoldKey = GlobalKey<ScaffoldState>();
-
   @override
   Widget build(BuildContext context) {
   howDrawer = _drowerListTarefa();
   
-    return DefaultTabController(
-      length: tabs.length,
-      child: Builder(builder: (BuildContext context) {
-        final TabController tabController = DefaultTabController.of(context);
-        tabController.addListener(() {
-          if (!tabController.indexIsChanging) {
-          }
-        });
-      return Scaffold(
-        appBar: AppBar(
-        backgroundColor: Colors.black,
-        centerTitle: true,
-        title:const Text('Opções De ADM',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 50.0,
-          ),
-        ),
-        leading: Builder(builder: (BuildContext context){
-          return BackButton(
-            onPressed: (){
-              Navigator.of(context).pushReplacementNamed(RouteNames.rotaStartPage );
-            },
-          );
-        }),
-        bottom: TabBar(
-          tabs: tabs ,
-          onTap: (int indexTab){
-            if(indexTab == 0){
-              drowerMode = 'Adicionar Funcionario';
-            }else{
-              drowerMode = 'Adicionar Tarefa';
+    return Screenshot(
+      controller: _screenshotController,
+      child: DefaultTabController(
+        length: tabs.length,
+        child: Builder(builder: (BuildContext context) {
+          final TabController tabController = DefaultTabController.of(context);
+          tabController.addListener(() {
+            if (!tabController.indexIsChanging) {
             }
-            setState(() {
-              
-            });
-          }
-        ),
-      ),
-        body: _selectedBody(),
-        endDrawerEnableOpenDragGesture: false,
-        endDrawer: howDrawer,
-        floatingActionButton:
-          FloatingActionButton(
-            foregroundColor: Colors.white,
-            backgroundColor: Colors.black,
-            child: const Icon(Icons.add),
-            onPressed: (){
-              drowerMode = 'Adicionar Tarefa';
-              _drowerListTarefa();
-             setState(() {
+          });
+          return 
+            Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.black,
+                centerTitle: true,
+                title:const Text('Opções De ADM',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 50.0,
+                  ),
+                ),
+                leading: Builder(builder: (BuildContext context){
+                  return BackButton(
+                    onPressed: (){
+                      Navigator.of(context).pushReplacementNamed(RouteNames.rotaStartPage );
+                    },
+                  );
+                }),
+                bottom: TabBar(
+                  tabs: tabs ,
+                  onTap: (int indexTab){
+                    if(indexTab == 0){
+                      drowerMode = 'Adicionar Funcionario';
+                    }else{
+                      drowerMode = 'Adicionar Tarefa';
+                    }
+                    setState(() {
                       
-              });
-              Scaffold.of(context).openEndDrawer();
-            }
-          ),
-        );
-      }),
+                    });
+                  }
+                ),
+              ),
+              body: _selectedBody(),
+              endDrawerEnableOpenDragGesture: false,
+              endDrawer: howDrawer,
+              floatingActionButton:Stack(
+                children: [
+                  Positioned(
+                    right: 16.0,
+                    bottom: 20.0,
+                    child: FloatingActionButton(
+                      heroTag: 'btn1',
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.black,
+                      child: const Icon(Icons.add),
+                      onPressed: (){
+                        drowerMode = 'Adicionar Tarefa';
+                        _drowerListTarefa();
+                        setState(() {
+                                  
+                        });
+                        //Scaffold.of(context).openEndDrawer();
+                      }
+                    ),
+                  ),
+                  Positioned(
+                    right: 16.0,
+                    bottom: 90.0,
+                    child: FloatingActionButton(
+                      heroTag: 'btn2',
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.black,
+                      child: const Icon(Icons.screenshot),
+                      onPressed: () async {
+                        drowerMode = 'Adicionar Tarefa';
+                        _screenshotController.captureAndSave(await _screenshot.takePath());
+                        setState(() {
+                                  
+                        });
+                        //Scaffold.of(context).openEndDrawer();
+                        print('screenshot realizada');
+                      }
+                    ),
+                  ),
+                  Positioned(
+                    right: 16.0,
+                    bottom: 160.0,
+                    child: FloatingActionButton(
+                      heroTag: 'btn3',
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.black,
+                      child: const Icon(Icons.settings),
+                      onPressed: () async {
+                        openAppSettings();
+                        drowerMode = 'Adicionar Tarefa';
+                        setState(() {
+                            
+                        });
+                      }
+                    ),
+                  ),
+                ]
+              )
+            );
+        }),
+      ),
     );
   }
 }
