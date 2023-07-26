@@ -189,6 +189,9 @@ class _RegisterPageState extends State<RegisterPage> {
             conColorToBack = Colors.blue[colorCodes[index % colorCodes.length]];
             containerColor = Colors.grey.shade200;
             if(finalizar == true){
+              //e se tiver algo em aberto na base de dados ( idfuncionario existe! && stopdatatime é nulo") finalizar.
+              //utilizar a mesma rotina quando for adicionar uma nova tarefa(se vou iniciar outra tarefa, logo, a tarefa anterior ja deve estar finalizada!)
+              //criar rotina que garante que o stop nao seja salvo caso nao exista nada aberto.
 
             }
           }else{
