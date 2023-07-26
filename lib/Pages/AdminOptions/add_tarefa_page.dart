@@ -91,7 +91,7 @@ class _AddTarefaPageState extends State<AddTarefaPage> {
         leading: Builder(builder: (BuildContext context){
           return BackButton(
             onPressed: (){
-              Navigator.of(context).pushReplacementNamed(RouteNames.rotaStartPage);
+              Navigator.of(context).pushReplacementNamed(RouteNames.rotaListTarefaPage);
             },
           );
         }),
