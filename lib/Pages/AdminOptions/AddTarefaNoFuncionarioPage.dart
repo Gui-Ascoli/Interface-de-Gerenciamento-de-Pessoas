@@ -1,3 +1,4 @@
+
 import 'package:banco/models/TarefaDoFuncionario.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,9 @@ class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage>
   bool selected = false;
   bool modeSwitch = false;
   
+  Funcionario funcionarioSelecionado = Funcionario();
   TarefaDoFuncionario tarefaFuncionario = TarefaDoFuncionario();
+  List<TarefaDoFuncionario> tarefaDoFuncionario = [];
   List<Tarefa> tarefas = [];
   List<Funcionario> funcionarios = [];
   List<int> colorCodes = [200, 250];
@@ -43,8 +46,29 @@ class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage>
         });
       });
 
-    }
+      db.getAllTarefasDoFuncionario().then((lista) {
+        setState(() {
+          tarefaDoFuncionario = lista;
+        });
+      });
 
+    }
+/*
+  bool  _mostraDebug (){
+    return (element) => element.id_funcionario == funcionarioSelecionado.id && element.id_tarefa == t.id;
+  }
+*/
+
+  bool _validaCriterio(Tarefa t) {
+ //(tarefaDoFuncionario.any((element) => element.id_funcionario == id_fs && element.id_tarefa == tarefas[index].id)[index].id_tarefa == tarefas[index].id)? modeSwitch : !modeSwitch,
+ if (selected) {
+  return tarefaDoFuncionario.any((element) => element.id_funcionario == funcionarioSelecionado.id && element.id_tarefa == t.id);
+
+  //return tarefaDoFuncionario.any(_mostraDebug());
+ }
+
+    return false;
+  }
 
   Widget _listaTarefas(int index){
     return InkWell(
@@ -63,16 +87,18 @@ class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage>
                     width: 10,
                   ),
                   Switch( 
-                    value: modeSwitch,
+                    //value: (tarefaDoFuncionario[index].id_tarefa == tarefas[index].id)?  modeSwitch : !modeSwitch,
+                    //value: (tarefaDoFuncionario[index].id_tarefa == tarefas[index].id)? modeSwitch : !modeSwitch,
+                    value: _validaCriterio(tarefas[index] as Tarefa),// (tarefaDoFuncionario.any((element) => element.id_funcionario == id_fs && element.id_tarefa == tarefas[index].id)[index].id_tarefa == tarefas[index].id)? modeSwitch : !modeSwitch,
                     onChanged: (value){
                       modeSwitch = !modeSwitch;
                       setState(() {
                         if(modeSwitch == true){
                           tarefaFuncionario.id_tarefa = tarefas[index].id;
-                          tarefaFuncionario.insert();
+                          //tarefaFuncionario.insert();
                         }else{
                           tarefaFuncionario.id_tarefa = tarefas[index].id;
-                          tarefaFuncionario.delete();
+                          //tarefaFuncionario.delete();
                         }
                         
                       });
@@ -115,6 +141,7 @@ class _AddTarefaNoFuncionarioPageState extends State<AddTarefaNoFuncionarioPage>
               setState(() {
                 selected = !selected;
                 if(selected == true){
+                  funcionarioSelecionado = funcionarios[index];
                   containerIndex = funcionarios[index].nome;
                   containerColor = Colors.grey.shade200;
                   tarefaFuncionario.id_funcionario = funcionarios[index].id;
