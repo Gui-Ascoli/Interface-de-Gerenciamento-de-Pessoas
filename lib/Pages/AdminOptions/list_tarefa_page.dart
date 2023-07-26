@@ -5,20 +5,20 @@ import 'package:flutter/material.dart';
 import '../../helpers/route_names.dart';
 import '../../models/funcionario.dart';
 
-class AdmOptionsPage extends StatefulWidget {
-  const AdmOptionsPage({super.key});
+class ListTarefaPage extends StatefulWidget {
+  const ListTarefaPage({super.key});
 
   @override
-  State<AdmOptionsPage> createState() => _AdmOptionsPageState();
+  State<ListTarefaPage> createState() => _ListTarefaPageState();
 }
 
-class _AdmOptionsPageState extends State<AdmOptionsPage> {
+class _ListTarefaPageState extends State<ListTarefaPage> {
 
   SnackBar? snackBar;
   Drawer? howDrawer ;
   TextEditingController? textFieldControler = TextEditingController();
-  Tarefa tarefaSelecionada = Tarefa(descricao: 'a');
-  Funcionario funcionarioSelecionado = Funcionario(nome:'a');
+  Tarefa tarefaSelecionada = Tarefa();
+  Funcionario funcionarioSelecionado = Funcionario();
   String? hinttxt ;
   String drowerMode = 'Adicionar Funcionario';
   String oldDrowerMode = '';
@@ -166,12 +166,12 @@ class _AdmOptionsPageState extends State<AdmOptionsPage> {
                 return IconButton(
                   onPressed: (){
                     textFieldControler!.text = funcionarios[index].nome;
-                    hinttxt = funcionarios[index].nome;
                     funcionarioSelecionado.nome = funcionarios[index].nome;
                     funcionarioSelecionado.id = funcionarios[index].id;
+                    hinttxt = funcionarios[index].nome;
                     drowerMode = 'Editar Funcionario';
                     setState(() {
-                      _drower();
+                      _drowerListTarefa();
                     });
                     Scaffold.of(context).openEndDrawer();
                   },
@@ -243,12 +243,12 @@ class _AdmOptionsPageState extends State<AdmOptionsPage> {
                 return IconButton(
                   onPressed: (){
                     textFieldControler!.text = tarefas[index].descricao;
-                    hinttxt = tarefas[index].descricao;
                     tarefaSelecionada.descricao = tarefas[index].descricao;
                     tarefaSelecionada.id = tarefas[index].id;
+                    hinttxt = tarefas[index].descricao;
                     drowerMode = 'Editar Tarefa';
                     setState(() {
-                      _drower();
+                      _drowerListTarefa();
                     });
                     Scaffold.of(context).openEndDrawer();
                   },
@@ -300,7 +300,7 @@ class _AdmOptionsPageState extends State<AdmOptionsPage> {
     );
   }
 
-  Drawer? _drower(){
+  Drawer? _drowerListTarefa(){
     howDrawer= Drawer(
       child: Row(
         children: <Widget>[
@@ -318,7 +318,7 @@ class _AdmOptionsPageState extends State<AdmOptionsPage> {
                 TextField(
                   controller: textFieldControler,
                   decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
+                    border: OutlineInputBorder(),
                     hintText: hinttxt,
                   ),
                   onChanged: (text){
@@ -336,7 +336,6 @@ class _AdmOptionsPageState extends State<AdmOptionsPage> {
                       if(drowerMode == 'Adicionar Funcionario'){
                         _snackBarAddFuncionario();
                         ScaffoldMessenger.of(context).showSnackBar(snackBar!);
-                        //funcionarioSelecionado.id = null;
                         await funcionarioSelecionado.insert(); 
                         _pegarFuncionarios();
                       }if(drowerMode == 'Editar Funcionario'){
@@ -344,11 +343,11 @@ class _AdmOptionsPageState extends State<AdmOptionsPage> {
                         ScaffoldMessenger.of(context).showSnackBar(snackBar!);
                         await funcionarioSelecionado.update(); 
                         _pegarFuncionarios();
-                        hinttxt = '';
-                        textFieldControler!.text = '';
+                        drowerMode = 'Adicionar Funcionario';
                       }
                       Navigator.pop(context);
                     }else{
+                      //TODO:snackbar erro ao inserir vazio
                       //_snackBarErroVazio();
                       //ScaffoldMessenger.of(context).showSnackBar(snackBar!);
                     }
@@ -356,7 +355,7 @@ class _AdmOptionsPageState extends State<AdmOptionsPage> {
                       if(drowerMode == 'Adicionar Tarefa'){
                         _snackBarAddTarefa();
                         ScaffoldMessenger.of(context).showSnackBar(snackBar!);
-                        //tarefaSelecionada.id = null;
+                        tarefaSelecionada.id = null;
                         await tarefaSelecionada.insert(); 
                         _pegarTarefas();
                       }if(drowerMode == 'Editar Tarefa'){
@@ -364,16 +363,16 @@ class _AdmOptionsPageState extends State<AdmOptionsPage> {
                         ScaffoldMessenger.of(context).showSnackBar(snackBar!);
                         await tarefaSelecionada.update();
                         _pegarTarefas();
-                        hinttxt = '';
-                        textFieldControler!.text = '';
+                        drowerMode = 'Adicionar Tarefa';
+                        
                       }
                       Navigator.pop(context);
                     }
                     else{
-                      //TODO:desenvolver uma rotina para a snack bar erro vazio que nao apareça multiplas vezes, ou em momentos indesejados.
-                      //_snackBarErroVazio();
-                      //ScaffoldMessenger.of(context).showSnackBar(snackBar!);
-                      }
+
+                    }
+                    hinttxt = '';
+                    textFieldControler?.text = '';
                   }
                 ),
                 const Expanded(
@@ -392,7 +391,7 @@ class _AdmOptionsPageState extends State<AdmOptionsPage> {
 
   @override
   Widget build(BuildContext context) {
-  howDrawer = _drower();
+  howDrawer = _drowerListTarefa();
   
     return DefaultTabController(
       length: tabs.length,
@@ -434,6 +433,7 @@ class _AdmOptionsPageState extends State<AdmOptionsPage> {
         ),
       ),
         body: _selectedBody(),
+        endDrawerEnableOpenDragGesture: false,
         endDrawer: howDrawer,
         floatingActionButton:
           FloatingActionButton(
@@ -442,8 +442,8 @@ class _AdmOptionsPageState extends State<AdmOptionsPage> {
             child: const Icon(Icons.add),
             onPressed: (){
               drowerMode = 'Adicionar Tarefa';
-              _drower();
-              setState(() {
+              _drowerListTarefa();
+             setState(() {
                       
               });
               Scaffold.of(context).openEndDrawer();
@@ -454,3 +454,4 @@ class _AdmOptionsPageState extends State<AdmOptionsPage> {
     );
   }
 }
+
