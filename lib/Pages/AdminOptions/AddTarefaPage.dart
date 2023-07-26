@@ -38,7 +38,6 @@ class AddTarefaPage extends StatefulWidget {
     );
   }
 
-
   TextEditingController? nomeControler = TextEditingController();
   DatabaseHelper db = DatabaseHelper();
   Tarefa tarefaSelecionada = Tarefa();

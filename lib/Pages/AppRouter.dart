@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:banco/Pages/StartPage.dart';
 import 'package:banco/Pages/RegisterPage.dart';
 import 'package:banco/Pages/TasksPage.dart';
-import 'AdminOptions/AddTarefaNoFuncionarioPage.dart';
 import 'AdminOptions/AddTarefaPage.dart';
 
 class AppRouter extends StatelessWidget{
@@ -16,7 +15,6 @@ class AppRouter extends StatelessWidget{
     return MaterialApp(
       initialRoute: '/StartPage',
       routes: {
-        '/AddTarefaNoFuncionarioPage' :(context) => const AddTarefaNoFuncionarioPage(),
         '/AddTarefaPage' :(context) => const AddTarefaPage(),
         '/StartPage' :(context) => const StartPage(),
         '/RegisterPage' :(context) => const RegisterPage(),

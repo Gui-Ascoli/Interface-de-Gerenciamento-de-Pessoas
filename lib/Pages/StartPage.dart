@@ -125,30 +125,14 @@ class _StartPageState extends State<StartPage> {
       ),
       body: _BodyStartPage(),
 
-      floatingActionButton:Stack(
-        children: [
-          Positioned(
-            right: 16.0,
-            bottom: 20.0,
-            child: FloatingActionButton(
-              onPressed: () {
-                Navigator.of(context).pushReplacementNamed('/TasksPage');
-              },
-              child: Icon(Icons.add),
-            ),
-          ),
-          Positioned(
-            right: 16.0,
-            bottom: 90.0,
-            child: FloatingActionButton(
-              onPressed: () {
-                Navigator.of(context).pushReplacementNamed('/AddTarefaNoFuncionario');
-              },
-              child: Icon(Icons.inbox_sharp),
-            ),
-          ),
-        ],
-      )
+      floatingActionButton:
+        FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: (){
+            Navigator.of(context).pushReplacementNamed("/AdminOptionsPage");
+          }
+          
+      ),
     );
   }
 }
