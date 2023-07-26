@@ -1,10 +1,15 @@
 // ignore_for_file: unnecessary_string_interpolations
 
+import 'dart:async';
+import 'dart:io';
+
+import 'package:path_provider/path_provider.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 import 'package:banco/models/Categoria.dart';
 import 'package:banco/models/Funcionario.dart';
 import 'package:banco/models/StopWatchTarefa.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import '../models/Tarefa.dart';
 import '../models/TarefaDoFuncionario.dart';
 
@@ -24,19 +29,56 @@ class DatabaseHelper {
   //inicializado por "sqfliteFfiInit();"
   static Database? _database;
   Future<Database> get database async {
-    if (_database == null) {
-      _database = await initialize();
-    }
+    _database ??= await initialize();
     return _database!;
   }
 
-    Future<Database> initialize() async {
-      final dbPath = await getDatabasesPath();
-      final path = join(dbPath, 'my_database.db');
+  FutureOr<void> onCreate(Database db, int version){
+    db.transaction((txn) async {
+      txn.execute('CREATE TABLE Funcionario (Id INTEGER PRIMARY KEY AUTOINCREMENT,Nome TEXT, Apto INTEGER)');
+      //txn.execute('CREATE TABLE StopWatchTarefa (id INTEGER PRIMARY KEY AUTOINCREMENT,start_timestamp DATETIME, stop_timestamp DATETIME, id_funcionario INTEGER , id_tarefas INTEGER)');
+      //txn.execute('CREATE TABLE Tarefa (Id INTEGER PRIMARY KEY AUTOINCREMENT,Descricao TEXT)');
+      //txn.execute('CREATE TABLE TarefaDoFuncionario (id_funcionario INTEGER, id_tarefa INTEGER)');
+    });
+  }
+  
 
-      return await openDatabase(path, version: 1, onCreate: (db, version) {});
+  Future<Database?> initialize() async {
+    //final dbPath = await getApplicationDocumentsDirectory(); windows
+    Directory? dbPath = await getExternalStorageDirectory(); //android
+    if(dbPath != null){
+      final path = join(dbPath.path, 'my_database.db');
+      final dbi =  await databaseFactoryFfi.openDatabase(path, options: OpenDatabaseOptions(
+          onCreate: onCreate,
+          version: 1,
+        )
+      );
+      return dbi;
+    }else{
+      return null;
     }
 
+  }
+/*
+  void preencherTabelas(){
+    Funcionario f = Funcionario(id:1,nome:"anderson", apto: true);
+    
+  }
+*/
+/*
+  Future<Database> createAllTables() async {
+  final databasePath = await getDatabasesPath();
+  final path = join(databasePath, 'my_database.db');
+  final database = openDatabase(
+    join(path),
+    onCreate: (db, version) {
+      // Código para criar tabelas e definir esquemas
+    },
+    version: 1,
+  );
+}
+  }
+*/
 
 //metodo retorna um item da lista (VIDEO)/ o primeiro item da lista
   Future<Funcionario?> getFuncionario(int id) async {
@@ -68,7 +110,7 @@ class DatabaseHelper {
     Database db = await database;
     List<Map<String, dynamic>> maps = await db.query(
       "Categoria",
-      columns: ['Id', 'Descricai'],
+      columns: ['Id', 'Descricao'],
       where: 'Id = ?',
       whereArgs: [id],
     );

@@ -14,7 +14,9 @@ class _StartPageState extends State<StartPage> {
   DatabaseHelper db = DatabaseHelper();
   bool finalizar = false;
 
+
   Widget _bodyStartPage(){
+    db.getAllCategorias();
     return Row(
       children:<Widget>[
         Expanded(
@@ -102,7 +104,7 @@ class _StartPageState extends State<StartPage> {
             child: FloatingActionButton(
               heroTag: "btn1",
               onPressed: () {
-                Navigator.of(context).pushReplacementNamed(RouteNames.rotaListFuncionarioPage);
+                Navigator.of(context).pushReplacementNamed(RouteNames.rotaAddFuncionariosPage);
               },
               child: const Icon(Icons.add),
             ),
