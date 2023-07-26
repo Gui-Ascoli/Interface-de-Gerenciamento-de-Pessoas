@@ -1,0 +1,15 @@
+--Consultar Tabelas de jeito simples
+SELECT * FROM Funcionarios; 
+SELECT * FROM Categoria C;
+SELECT * FROM Tarefas T;
+
+--Consultar Tabelas de jeito simples
+SELECT CA.Id AS "Id Categorias Atribuidas", C.Descricao AS "Descrição da Categoria", F.Nome AS "Nome do Funcionário"
+FROM CategoriasAtribuidas CA 
+INNER JOIN Categoria C ON CA.Id_Categoria = C.Id --Ligue com a tabela categoria
+INNER JOIN Funcionarios F ON CA.Id_Funcionario = F.Id
+
+SELECT TF.Id , TF.Data_HoraInicio, TF.Data_HoraFinal, F.Nome, T.Descricao
+FROM TarefasFuncionarios TF
+INNER JOIN Funcionarios F ON F.ID = TF.ID_Funcionario 
+INNER JOIN Tarefas T ON T.ID = TF.Id_Tarefa 

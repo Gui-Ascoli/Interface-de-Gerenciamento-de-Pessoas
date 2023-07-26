@@ -1,0 +1,35 @@
+--Criar Tabela Tarefa
+CREATE TABLE Tarefas (
+	Id INTEGER PRIMARY KEY AutoIncrement,
+	Descricao VARCHAR,
+	Id_Categoria Int
+);
+
+--Criar Tabela Categoria
+CREATE TABLE Categoria (
+	Id INTEGER PRIMARY KEY AutoIncrement,
+	Descricao VARCHAR
+);
+
+--Criar Tabela Funcionarios
+CREATE TABLE Funcionarios (
+	Id INTEGER PRIMARY KEY AutoIncrement,
+	Nome VARCHAR,
+	APTO INTEGER
+);
+
+--Criar Tabela CategoriasAtribuidas
+CREATE TABLE CategoriasAtribuidas (
+	Id INTEGER PRIMARY KEY AutoIncrement,
+	Id_Funcionario INTEGER,
+	Id_Categoria INTEGER
+);
+
+--Criar Tabela TarefasFuncionarios
+CREATE TABLE TarefasFuncionarios (
+	Id INTEGER PRIMARY KEY AutoIncrement,
+	Data_HoraInicio TIMESTAMP,
+	Data_HoraFinal TIMESTAMP,
+	ID_Funcionario INTEGER,
+	Id_Tarefa INTEGER
+);

@@ -1,0 +1,47 @@
+--Inserir Funcionario
+INSERT INTO Funcionarios (Nome, Apto)  
+VALUES ("Nome", 1);
+
+INSERT INTO Funcionarios (Nome, Apto)  
+VALUES ("Sobrenome", 1);
+
+INSERT INTO Funcionarios (Nome, Apto)  
+VALUES ("Apelido", 1);
+
+
+--Inserir Categoria
+INSERT INTO Categoria (Descricao)  
+VALUES ("Cortar Unha");
+
+INSERT INTO Categoria (Descricao)  
+VALUES ("Trocar Telha");
+
+INSERT INTO Categoria (Descricao)  
+VALUES ("Cavalo");
+
+--Inserir CategoriasAtribuidas
+INSERT INTO CategoriasAtribuidas (Id_Funcionario, Id_Categoria)  
+VALUES (1, 1);
+
+INSERT INTO CategoriasAtribuidas (Id_Funcionario, Id_Categoria)  
+VALUES (1, 2);
+
+INSERT INTO CategoriasAtribuidas (Id_Funcionario, Id_Categoria)  
+VALUES (2, 1);
+
+INSERT INTO CategoriasAtribuidas (Id_Funcionario, Id_Categoria)  
+VALUES (2, 3);
+
+--Inserir Categoria
+INSERT INTO Tarefas (Descricao, Id_Categoria)  
+VALUES ("Cortar", 1);
+
+INSERT INTO Tarefas (Descricao, Id_Categoria)  
+VALUES ("Cav", 3);
+
+--Inserir TarefasFuncionarios
+INSERT INTO TarefasFuncionarios (Data_HoraInicio, Data_HoraFinal, ID_Funcionario, Id_Tarefa)  
+VALUES ("1990-01-01 12:12:12", "2000-01-01 12:12:12", 1, 1);
+
+INSERT INTO TarefasFuncionarios (Data_HoraInicio, Data_HoraFinal, ID_Funcionario, Id_Tarefa)  
+VALUES ("1991-01-01 12:12:12", "2000-01-01 08:12:12", 2, 2);
