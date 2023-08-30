@@ -15,9 +15,12 @@ import '../models/tarefa_do_funcionario.dart';
 class DatabaseHelper {
   DatabaseHelper._();
 
-  FutureOr<void> initConection() async{
+  Directory? dbPath;
+
+  FutureOr<void> initConection() async {
     database;
-}
+  }
+
   //static Database? _database;
   static final DatabaseHelper _instance = DatabaseHelper._();
   factory DatabaseHelper() {
@@ -44,25 +47,29 @@ class DatabaseHelper {
       await txn.execute(TarefaDoFuncionario().createScript);
     });
   }
-  
-   FutureOr<void> dropDB()async{
+
+  FutureOr<void> dropDB() async {
     var db = await database;
-    await db.transaction((txn) async{
+    await db.transaction((txn) async {
       await txn.execute(Funcionario().dropScript);
-      await  txn.execute(StopWatchTarefa().dropScript);
-      await  txn.execute(Tarefa().dropScript);
-      await  txn.execute(TarefaDoFuncionario().dropScript);
-    }
-    );
+      await txn.execute(StopWatchTarefa().dropScript);
+      await txn.execute(Tarefa().dropScript);
+      await txn.execute(TarefaDoFuncionario().dropScript);
+    });
   }
+
   Future<Database?> initialize() async {
-    //final dbPath = await getApplicationDocumentsDirectory(); windows
-    Directory? dbPath = await getExternalStorageDirectory(); //android
-    if(dbPath != null){
-      final path = join(dbPath.path, 'my_database.db');
-      final dbi =  await databaseFactoryFfi.openDatabase(path);
+    if (Platform.isAndroid) {
+      dbPath = await getExternalStorageDirectory(); //android
+    } else if (Platform.isWindows) {
+      dbPath = await getApplicationDocumentsDirectory(); //windows
+    }
+
+    if (dbPath != null) {
+      final path = join(dbPath!.path, 'my_database.db');
+      final dbi = await databaseFactoryFfi.openDatabase(path);
       return dbi;
-    }else{
+    } else {
       return null;
     }
   }
@@ -77,7 +84,7 @@ class DatabaseHelper {
       where: 'Id = ?',
       whereArgs: [id],
     );
-  //maps.length
+    //maps.length
     if (maps.isNotEmpty) {
       return Funcionario.fromMap(maps.first);
     } else {
@@ -85,41 +92,47 @@ class DatabaseHelper {
     }
   }
 
-  Future<List<Funcionario>>getAllFuncionarios() async{
+  Future<List<Funcionario>> getAllFuncionarios() async {
     Database db = await database;
     var resultado = await db.query("Funcionario");
-    List<Funcionario>lista = 
-    resultado.isNotEmpty ? resultado.map((c) => Funcionario.fromMap(c)).toList() : [];
+    List<Funcionario> lista = resultado.isNotEmpty
+        ? resultado.map((c) => Funcionario.fromMap(c)).toList()
+        : [];
     return lista;
   }
 
-  Future<List<Tarefa>>getAllTarefas() async{
+  Future<List<Tarefa>> getAllTarefas() async {
     Database db = await database;
     var resultado = await db.query("Tarefa");
-    List<Tarefa>lista = 
-    resultado.isNotEmpty ? resultado.map((c) => Tarefa.fromMap(c)).toList() : [];
+    List<Tarefa> lista = resultado.isNotEmpty
+        ? resultado.map((c) => Tarefa.fromMap(c)).toList()
+        : [];
     return lista;
   }
 
-  Future<List<TarefaDoFuncionario>>getAllTarefasDoFuncionario() async{
+  Future<List<TarefaDoFuncionario>> getAllTarefasDoFuncionario() async {
     Database db = await database;
     var resultado = await db.query("TarefaDoFuncionario");
-    List<TarefaDoFuncionario>lista = 
-    resultado.isNotEmpty ? resultado.map((c) => TarefaDoFuncionario.fromMap(c)).toList() : [];
+    List<TarefaDoFuncionario> lista = resultado.isNotEmpty
+        ? resultado.map((c) => TarefaDoFuncionario.fromMap(c)).toList()
+        : [];
     return lista;
   }
 
-  Future<List<StopWatchTarefa>>getAllTimeStampTarefaDoFuncionario() async{
+  Future<List<StopWatchTarefa>> getAllTimeStampTarefaDoFuncionario() async {
     Database db = await database;
     var resultado = await db.query("TimeStampTarefaDoFuncionario");
-    List<StopWatchTarefa> lista = resultado.isNotEmpty ? resultado.map((c) => StopWatchTarefa.fromMap(c)).toList() : [];
+    List<StopWatchTarefa> lista = resultado.isNotEmpty
+        ? resultado.map((c) => StopWatchTarefa.fromMap(c)).toList()
+        : [];
     return lista;
   }
 
   //metodo obtem o numero de objetos nome no banco de dados
-  Future<int?>getNomesCount() async{
+  Future<int?> getNomesCount() async {
     Database db = await database;
-    List<Map<String,dynamic>> x = await db.rawQuery("SELECT COUNT (*) from Funcionario");
+    List<Map<String, dynamic>> x =
+        await db.rawQuery("SELECT COUNT (*) from Funcionario");
     int? resultado = Sqflite.firstIntValue(x);
     return resultado;
   }
